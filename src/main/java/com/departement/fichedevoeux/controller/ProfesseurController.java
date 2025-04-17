@@ -10,7 +10,13 @@ import java.util.List;
 @RequestMapping("/api/professeurs")
 
 
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/professeurs")
+
 public class ProfesseurController {
+
 	@Autowired
     private ProfesseurRepository professeurRepository;
     @GetMapping
@@ -37,6 +43,13 @@ public class ProfesseurController {
     public Professeur create(@RequestBody Professeur prof) {
         return professeurRepository.save(prof);
     }
+
+	
+	 @GetMapping("/test")
+	    public String hello() {
+	        return "Professeur Controller is working!";
+	    }
+
 }
 
 
