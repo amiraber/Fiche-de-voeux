@@ -1,5 +1,8 @@
 package com.departement.fichedevoeux.repository;
 
-public class ProfesseurRepository {
+import com.departement.fichedevoeux.model.Professeur;
+import org.springframework.data.jpa.repository.JpaRepository;
 
+
+public interface ProfesseurRepository extends JpaRepository<Professeur, Long> {
 }
