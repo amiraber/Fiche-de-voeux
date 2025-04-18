@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.departement.fichedevoeux.model.Professeur;
+import com.departement.fichedevoeux.repository.ProfesseurRepository;
+
 import DTO.DeadlineRequestDTO;
 
 @RestController
@@ -22,9 +25,20 @@ public class AdminController {
         this.adminService = adminService;
     }
     
+    @Autowired
+    private ProfesseurRepository professeurRepository;
+
+    private boolean isUserChef(Long profId) {
+        Professeur prof = professeurRepository.findById(profId).orElse(null);
+        return prof != null && prof.isChef(); // or isChef() if using Lombok
+    }
+    
     //exports data (Fiche de Vœux submissions)
     @GetMapping("/export")
-    public ResponseEntity<?> exportExcel() {
+    public ResponseEntity<?> exportExcel(@RequestParam Long profId) {
+        if (!isUserChef(profId)) {
+            return ResponseEntity.status(403).body("Access denied: not a department head");
+        }
         return ResponseEntity.ok("Excel exported");
     }
     //see if the deadline is active
@@ -35,7 +49,11 @@ public class AdminController {
 
     //admin can set/change the deadline
     @PostMapping("/deadline")
-    public ResponseEntity<?> setDeadline(@RequestBody DeadlineRequestDTO deadlineRequest) {
+    public ResponseEntity<?> setDeadline(@RequestParam Long profId, @RequestBody DeadlineRequestDTO deadlineRequest) {
+        if (!isUserChef(profId)) {
+            return ResponseEntity.status(403).body("Access denied: not a department head");
+        }
+        // Call your service method to update deadline
         return ResponseEntity.ok("Deadline updated");
     }
 
