@@ -2,7 +2,11 @@ package com.departement.fichedevoeux.controller;
 
 import com.departement.fichedevoeux.model.Message;
 import com.departement.fichedevoeux.service.MessageService;
+
+import DTO.MessageRequestDTO;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,15 +14,20 @@ import java.util.List;
 @RequestMapping("/api/messages")
 
 public class MessageController {
-	@Autowired
-	private MessageService messageService;
-	
-	 @PostMapping
-	 public Message sendMessage(@RequestBody Message message) {
-		 return messageService.sendMessage(message);
-	 }
-	 @GetMapping
-	 public List <Message> getMessageByUser(@RequestParam("user") Long userId) {
-		 return messageService.getMessageByAuteurId(userId);
-	 }
+	private final MessageService messageService;
+
+    public MessageController(MessageService messageService) {
+        this.messageService = messageService;
+    }
+    //professors/admin can send messages.
+    @PostMapping("/send")
+    public ResponseEntity<?> sendMessage(@RequestBody MessageRequestDTO request) {
+        return ResponseEntity.ok("Message sent");
+    }
+
+    //loads inbox for a given professor
+    @GetMapping("/inbox")
+    public ResponseEntity<?> getMessages(@RequestParam Long profId) {
+        return ResponseEntity.ok("Inbox loaded");
+    }
 }

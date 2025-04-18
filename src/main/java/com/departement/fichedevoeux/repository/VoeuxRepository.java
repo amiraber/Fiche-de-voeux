@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface VoeuxRepository extends JpaRepository<Voeux, Long> {
+public interface VoeuxRepository extends JpaRepository<Voeux, Integer> {
 	 List<Voeux> findByProfesseurId(Long id);
 
 	    List<Voeux> findBySemestre(Integer semestre);
