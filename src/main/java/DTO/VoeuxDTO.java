@@ -1,6 +1,6 @@
 package DTO;
 
-public class ChoixDTO {
+public class VoeuxDTO {
 	
 	private String palier;
     private String specialite;

@@ -10,7 +10,7 @@ public class BesoinsProf {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_besoins")
-    private int idBesoins;
+    private Long idBesoins;
 
     @ManyToOne
     @JoinColumn(name = "id_prof", nullable = false)
@@ -47,11 +47,11 @@ public class BesoinsProf {
 
     // Getters et setters
 
-    public int getIdBesoins() {
+    public Long getIdBesoins() {
         return idBesoins;
     }
 
-    public void setIdBesoins(int idBesoins) {
+    public void setIdBesoins(Long idBesoins) {
         this.idBesoins = idBesoins;
     }
 
