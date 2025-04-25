@@ -13,7 +13,6 @@ public interface ProfesseurRepository extends JpaRepository<Professeur, Long> {
 	List<Professeur> findByNom(String nom);
 	List<Professeur> findByDepartementId(Long id);
 	List<Professeur> findByIsChefTrue();
-	Boolean existsByEmail(String email);
 	
 
 }

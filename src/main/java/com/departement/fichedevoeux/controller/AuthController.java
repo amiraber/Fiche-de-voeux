@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.departement.fichedevoeux.model.Professeur;
+import com.departement.fichedevoeux.service.AuthService;
 
 import DTO.LoginRequestDTO;
 import DTO.RegisterRequestDTO;
@@ -25,14 +26,14 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequestDTO request) {
-        // return authService.register(request);
-        return ResponseEntity.ok("User registered successfully");
+    	boolean success = authService.register(request);
+    	return success ? ResponseEntity.ok("User registered successfully") : ResponseEntity.badRequest().body("Email already used");
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO request) {
-        // return authService.login(request);
-        return ResponseEntity.ok("Login successful");
+    	boolean valid = authService.login(request);
+    	return valid ? ResponseEntity.ok("Login successful") : ResponseEntity.status(401).body("Invalid Email or password");
     }
 	
 }

@@ -1,18 +1,18 @@
 package DTO;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class DeadlineRequestDTO {
 
 	//Holds the deadline as a LocalDateTime
 	
-	private LocalDateTime deadline;
+	private LocalDate deadline;
 
-	public LocalDateTime getDeadline() {
+	public LocalDate getDeadline() {
 		return deadline;
 	}
 
-	public void setDeadline(LocalDateTime deadline) {
+	public void setDeadline(LocalDate deadline) {
 		this.deadline = deadline;
 	}
 	

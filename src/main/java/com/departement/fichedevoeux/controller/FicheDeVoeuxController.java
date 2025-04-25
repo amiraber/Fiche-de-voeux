@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.departement.fichedevoeux.service.FicheDeVoeuxService;
+
 import DTO.FormulaireRequestDTO;
 
 @RestController
@@ -15,28 +17,33 @@ import DTO.FormulaireRequestDTO;
 
 public class FicheDeVoeuxController {
 
-	private final FicheDeVoeuxService ficheDeVoeuxService;
+private final FicheDeVoeuxService ficheDeVoeuxService;
 
     public FicheDeVoeuxController(FicheDeVoeuxService ficheDeVoeuxService) {
         this.ficheDeVoeuxService = ficheDeVoeuxService;
     }
+    
    //handles form submission for course preferences.
     @PostMapping("/submit")
     public ResponseEntity<?> submitForm(@RequestBody FormulaireRequestDTO form) {
-        return ResponseEntity.ok("Form submitted");
+        boolean submitted = ficheDeVoeuxService.submitFormulaire(form);
+        return submitted ? ResponseEntity.ok("Form submitted")
+                         : ResponseEntity.badRequest().body("Invalid form submission");
     }
-
+    
+    
     //checks if a professor submitted their fiche
-
     @GetMapping("/status")
     public ResponseEntity<?> checkStatus(@RequestParam Long professorId) {
-        return ResponseEntity.ok("Status: Not submitted yet");
+        boolean hasSubmitted = ficheDeVoeuxService.hasSubmitted(professorId);
+        return ResponseEntity.ok("Status: " + (hasSubmitted ? "Submitted" : "Not submitted yet"));
     }
 
     //checks if the form is locked
     @GetMapping("/locked")
     public ResponseEntity<?> isFormLocked() {
-        return ResponseEntity.ok("Form is currently unlocked");
+        boolean locked = ficheDeVoeuxService.isFormLocked();
+        return ResponseEntity.ok("Form is currently " + (locked ? "locked" : "unlocked"));
     }
-	
+
 }

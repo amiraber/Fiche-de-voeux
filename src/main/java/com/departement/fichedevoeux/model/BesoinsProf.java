@@ -47,7 +47,24 @@ public class BesoinsProf {
 
     // Getters et setters
 
-    public Long getIdBesoins() {
+    public BesoinsProf(Long idBesoins, Professeur professeur, String anneeScolaire, String emailPrefere,
+			Integer heuresSuppS1, Integer heuresSuppS2, Integer nbrHeuresSuppS1, Integer nbrHeuresSuppS2,
+			Integer nbrPfeLicence, Integer nbrPfeMaster, String statut) {
+		super();
+		this.idBesoins = idBesoins;
+		this.professeur = professeur;
+		this.anneeScolaire = anneeScolaire;
+		this.emailPrefere = emailPrefere;
+		this.heuresSuppS1 = heuresSuppS1;
+		this.heuresSuppS2 = heuresSuppS2;
+		this.nbrHeuresSuppS1 = nbrHeuresSuppS1;
+		this.nbrHeuresSuppS2 = nbrHeuresSuppS2;
+		this.nbrPfeLicence = nbrPfeLicence;
+		this.nbrPfeMaster = nbrPfeMaster;
+		this.statut = statut;
+	}
+
+	public Long getIdBesoins() {
         return idBesoins;
     }
 

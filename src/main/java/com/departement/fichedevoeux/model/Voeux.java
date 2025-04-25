@@ -10,7 +10,7 @@ public class Voeux {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_voeux")
-    private int idVoeux;
+    private Long idVoeux;
 
     @ManyToOne
     @JoinColumn(name = "id_prof", nullable = false)
@@ -37,11 +37,11 @@ public class Voeux {
         this.numChoix = numChoix;
     }
 
-    public int getIdVoeux() {
+    public Long getIdVoeux() {
         return idVoeux;
     }
 
-    public void setIdVoeux(int idVoeux) {
+    public void setIdVoeux(Long idVoeux) {
         this.idVoeux = idVoeux;
     }
 

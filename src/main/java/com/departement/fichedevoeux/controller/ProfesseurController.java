@@ -1,6 +1,10 @@
 package com.departement.fichedevoeux.controller;
 import com.departement.fichedevoeux.model.Professeur;
 import com.departement.fichedevoeux.repository.ProfesseurRepository;
+import com.departement.fichedevoeux.service.ProfesseurService;
+
+import DTO.ProfesseurDTO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,39 +18,51 @@ import org.springframework.web.bind.annotation.*;
 
 public class ProfesseurController {
 
-	@Autowired
-    private ProfesseurRepository professeurRepository;
+    @Autowired
+    private ProfesseurService professeurService;
+
+    // Tous les professeurs (en DTO)
     @GetMapping
-    public List<Professeur> getAll() {
-        return professeurRepository.findAll();
+    public List<ProfesseurDTO> getAll() {
+        return professeurService.getAll();
     }
+
+    // Prof par ID
     @GetMapping("/{id}")
-    public Professeur getById(@PathVariable Long id) {
-        return professeurRepository.findById(id).orElse(null);
+    public ProfesseurDTO getById(@PathVariable Long id) {
+        return professeurService.getById(id);
     }
+
+    // Par email
     @GetMapping("/by-email")
-    public Professeur getByEmail(@RequestParam String email) {
-        return professeurRepository.findByEmail(email);
+    public ProfesseurDTO getByEmail(@RequestParam String email) {
+        return professeurService.getByEmail(email);
     }
+
+    // Tous les profs d’un département
     @GetMapping("/by-departement/{id}")
-    public List<Professeur> getByDepartment(@PathVariable Long id) {
-        return professeurRepository.findByDepartementId(id);
+    public List<ProfesseurDTO> getByDepartment(@PathVariable Long id) {
+        return professeurService.getByDepartement(id);
     }
+
+    // Tous les chefs
     @GetMapping("/chef")
-    public List<Professeur> getChefs() {
-        return professeurRepository.findByIsChefTrue();
+    public List<ProfesseurDTO> getChefs() {
+        return professeurService.getChefs();
     }
+
+    // Créer un prof (retourne success boolean ou message)
     @PostMapping
-    public Professeur create(@RequestBody Professeur prof) {
-        return professeurRepository.save(prof);
+    public String create(@RequestBody Professeur prof) {
+        boolean success = professeurService.createProfesseur(prof);
+        return success ? "Professeur créé avec succès" : "Email déjà utilisé";
     }
 
-	
-	 @GetMapping("/test")
-	    public String hello() {
-	        return "Professeur Controller is working!";
-	    }
-
+    // Test API
+    @GetMapping("/test")
+    public String hello() {
+        return "Professeur Controller is working!";
+    }
 }
 
 

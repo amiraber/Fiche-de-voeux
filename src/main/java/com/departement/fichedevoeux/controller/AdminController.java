@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.departement.fichedevoeux.model.Professeur;
 import com.departement.fichedevoeux.repository.ProfesseurRepository;
+import com.departement.fichedevoeux.service.AdminService;
 
 import DTO.DeadlineRequestDTO;
 
@@ -18,11 +19,14 @@ import DTO.DeadlineRequestDTO;
 @RequestMapping("/api/admin")
 
 public class AdminController {
+
+    private final AuthController authController;
 	
 	private final AdminService adminService;
 
-    public AdminController(AdminService adminService) {
+    public AdminController(AdminService adminService, AuthController authController) {
         this.adminService = adminService;
+        this.authController = authController;
     }
     
     @Autowired
@@ -36,10 +40,11 @@ public class AdminController {
     //exports data (Fiche de Vœux submissions)
     @GetMapping("/export")
     public ResponseEntity<?> exportExcel(@RequestParam Long profId) {
-        if (!isUserChef(profId)) {
+        if (!adminService.isChef(profId)) {
             return ResponseEntity.status(403).body("Access denied: not a department head");
         }
-        return ResponseEntity.ok("Excel exported");
+        byte[] fichier = adminService.exporterExcel();
+        return ResponseEntity.ok().header("Content-Disposition", "attachement; filename=\"export.xlsx\"").body(fichier);
     }
     //see if the deadline is active
     @GetMapping("/deadline")
@@ -53,8 +58,8 @@ public class AdminController {
         if (!isUserChef(profId)) {
             return ResponseEntity.status(403).body("Access denied: not a department head");
         }
-        // Call your service method to update deadline
-        return ResponseEntity.ok("Deadline updated");
+        boolean success = adminService.setDeadline(deadlineRequest.getDeadline());
+        return success ? ResponseEntity.ok("Deadline updated") : ResponseEntity.badRequest().body("Erreur");
     }
 
 }

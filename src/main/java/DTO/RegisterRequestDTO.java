@@ -1,11 +1,13 @@
 package DTO;
 
+import com.departement.fichedevoeux.model.Departement;
+
 public class RegisterRequestDTO {
   
 	private String email;
     private String password;
     private String nom;
-    private String departement;
+    private  String departement;
 	public String getEmail() {
 		return email;
 	}
