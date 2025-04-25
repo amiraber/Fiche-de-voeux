@@ -1,5 +1,5 @@
 package com.departement.fichedevoeux.model;
 
-public class ProfesseurTest {
-
+public enum Grade {
+	PROF, MAB, MAA, MCB, MCA;
 }

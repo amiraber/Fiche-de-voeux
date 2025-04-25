@@ -24,8 +24,9 @@ public class Professeur {
 
     @Column(nullable = false)
     private String motDePasse;
-
-    private String grade;
+    
+    @Enumerated(EnumType.STRING)
+    private Grade grade;
 
     @ManyToOne
     @JoinColumn(name = "id_departement", nullable = false)
@@ -34,12 +35,14 @@ public class Professeur {
 	@Column(name = "is_chef", columnDefinition = "INTEGER DEFAULT 0")
     private boolean isChef;
 	
+	private int numBureau;
+	
 	//  Constructeurs :
 	
 	public Professeur() {}
 	
-	public Professeur(Long id, String nom, String prenom, String email, String motDePasse, String grade,
-			Departement departement, boolean isChef) {
+	public Professeur(Long id, String nom, String prenom, String email, String motDePasse, Grade grade,
+			Departement departement, boolean isChef, int numBureau) {
 		this.id = id;
 		this.nom = nom;
 		this.prenom = prenom;
@@ -48,6 +51,7 @@ public class Professeur {
 		this.grade = grade;
 		this.departement = departement;
 		this.isChef = isChef;
+		this.numBureau = numBureau;
 	}
 
 	// getters et setters :
@@ -92,11 +96,11 @@ public class Professeur {
 		this.motDePasse = motDePasse;
 	}
 
-	public String getGrade() {
+	public Grade getGrade() {
 		return grade;
 	}
 
-	public void setGrade(String grade) {
+	public void setGrade(Grade grade) {
 		this.grade = grade;
 	}
 
@@ -115,7 +119,12 @@ public class Professeur {
 	public void setChef(boolean isChef) {
 		this.isChef = isChef;
 	}
-	
-	
-	
+
+	public int getNumBureau() {
+		return numBureau;
+	}
+
+	public void setNumBureau(int numBureau) {
+		this.numBureau = numBureau;
+	}
 }

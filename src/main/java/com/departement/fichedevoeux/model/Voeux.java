@@ -23,21 +23,32 @@ public class Voeux {
     private int semestre;
 
     private String nature;
+    
+    private int annee;
 
     @Column(name = "num_choix")
     private int numChoix;
 
     public Voeux() {}
 
-    public Voeux(Professeur professeur, Module module, int semestre, String nature, int numChoix) {
+    public Voeux(Professeur professeur, Module module, int semestre, String nature,int annee, int numChoix) {
         this.professeur = professeur;
         this.module = module;
         this.semestre = semestre;
         this.nature = nature;
+        this.annee = annee;
         this.numChoix = numChoix;
     }
 
-    public Long getIdVoeux() {
+    public int getAnnee() {
+		return annee;
+	}
+
+	public void setAnnee(int annee) {
+		this.annee = annee;
+	}
+
+	public Long getIdVoeux() {
         return idVoeux;
     }
 

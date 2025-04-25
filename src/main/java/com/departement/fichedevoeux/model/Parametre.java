@@ -12,7 +12,7 @@ public class Parametre {
 
     private LocalDate deadline;
 
-    // + Getters & Setters
+    // Getters & Setters
     public Long getId() {
         return id;
     }

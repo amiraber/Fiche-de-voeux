@@ -47,8 +47,7 @@ public class AdminService {
 
     // Simulation de l’export Excel (remplacer par POI plus tard)
     public byte[] exporterExcel() {
-        // Ici tu ajouteras la génération réelle avec Apache POI
-        String contenu = "Fichier Excel fictif des fiches de vœux";
-        return contenu.getBytes(StandardCharsets.UTF_8);
+        // Ici tu ajouteras la génération réelle avec Apache POI ( la construction du fichier)
+       return null ; // remplace null plus tard
     }
 }
