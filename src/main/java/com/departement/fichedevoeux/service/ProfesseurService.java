@@ -71,5 +71,13 @@ public class ProfesseurService {
         dto.setDepartement(prof.getDepartement().getNom());
         return dto;
     }
+    
+    public boolean updateEmailPref(Long profId, String emailPref) {
+    	Professeur prof = professeurRepository.findById(profId).orElse(null);
+    	if(prof == null) return false;
+    	prof.setEmailPref(emailPref);
+    	professeurRepository.save(prof);
+    	return true;
+    }
 }
 

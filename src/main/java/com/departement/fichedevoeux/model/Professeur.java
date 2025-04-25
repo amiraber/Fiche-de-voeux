@@ -37,12 +37,14 @@ public class Professeur {
 	
 	private int numBureau;
 	
+	private String emailPref;
+	
 	//  Constructeurs :
 	
 	public Professeur() {}
 	
 	public Professeur(Long id, String nom, String prenom, String email, String motDePasse, Grade grade,
-			Departement departement, boolean isChef, int numBureau) {
+			Departement departement, boolean isChef, int numBureau,String emailPref) {
 		this.id = id;
 		this.nom = nom;
 		this.prenom = prenom;
@@ -52,6 +54,7 @@ public class Professeur {
 		this.departement = departement;
 		this.isChef = isChef;
 		this.numBureau = numBureau;
+		this.emailPref = emailPref;
 	}
 
 	// getters et setters :
@@ -126,5 +129,17 @@ public class Professeur {
 
 	public void setNumBureau(int numBureau) {
 		this.numBureau = numBureau;
+	}
+
+	public String getEmailPref() {
+		return emailPref;
+	}
+
+	public void setEmailPref(String emailPref) {
+		this.emailPref = emailPref;
+	}
+	
+	public String getEmailActif() {
+		return (emailPref != null && !emailPref.isEmpty()) ? emailPref : email;
 	}
 }

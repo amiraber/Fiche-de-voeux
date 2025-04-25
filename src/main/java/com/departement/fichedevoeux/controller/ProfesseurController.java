@@ -6,6 +6,7 @@ import com.departement.fichedevoeux.service.ProfesseurService;
 import DTO.ProfesseurDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -58,11 +59,21 @@ public class ProfesseurController {
         return success ? "Professeur créé avec succès" : "Email déjà utilisé";
     }
 
+    @PutMapping("/emai-Pref")
+    	public ResponseEntity<?> updateEmailPref(@RequestParam Long profId, @RequestParam String emailPref){
+    		boolean success = professeurService.updateEmailPref(profId, emailPref);
+    		if(!success) return ResponseEntity.badRequest().body("Professeur introuvable");
+    		return ResponseEntity.ok("Email préféré mis à jour");
+    	}
+    
+    
     // Test API
     @GetMapping("/test")
     public String hello() {
         return "Professeur Controller is working!";
     }
+    
+    
 }
 
 

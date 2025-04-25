@@ -8,8 +8,11 @@ public class FormulaireRequestDTO {
 	    private List<ChoixDTO> semestre1;
 	    private List<ChoixDTO> semestre2;
 	    private boolean wantsExtraCourses;
-	    private int extraHours;
-	    private int proposedLicences;
+	    private int extraHoursS1;
+	    private int extraHoursS2;
+	    private int proposedLicence;
+	    private int prposedMaster;
+	    
 		public Long getProfesseurId() {
 			return professeurId;
 		}
@@ -35,16 +38,28 @@ public class FormulaireRequestDTO {
 			this.wantsExtraCourses = wantsExtraCourses;
 		}
 		public int getExtraHours() {
-			return extraHours;
+			return extraHoursS1;
 		}
-		public void setExtraHours(int extraHours) {
-			this.extraHours = extraHours;
+		public void setExtraHours(int extraHoursS1) {
+			this.extraHoursS1 = extraHoursS1;
+		}
+		public int getExtraHoursS2() {
+			return extraHoursS2;
+		}
+		public void setExtraHoursS2(int extraHoursS2) {
+			this.extraHoursS2 = extraHoursS2;
 		}
 		public int getProposedLicences() {
-			return proposedLicences;
+			return proposedLicence;
 		}
-		public void setProposedLicences(int proposedLicences) {
-			this.proposedLicences = proposedLicences;
+		public void setProposedLicences(int proposedLicence) {
+			this.proposedLicence = proposedLicence;
+		}
+		public int getPrposedMaster() {
+			return prposedMaster;
+		}
+		public void setPrposedMaster(int prposedMaster) {
+			this.prposedMaster = prposedMaster;
 		}
 	    
 	    

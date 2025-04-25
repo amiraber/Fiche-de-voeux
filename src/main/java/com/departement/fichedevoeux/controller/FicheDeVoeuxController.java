@@ -1,13 +1,17 @@
 package com.departement.fichedevoeux.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.departement.fichedevoeux.model.Voeux;
 import com.departement.fichedevoeux.service.FicheDeVoeuxService;
 
 import DTO.FormulaireRequestDTO;
@@ -45,5 +49,25 @@ private final FicheDeVoeuxService ficheDeVoeuxService;
         boolean locked = ficheDeVoeuxService.isFormLocked();
         return ResponseEntity.ok("Form is currently " + (locked ? "locked" : "unlocked"));
     }
+    
+    
+    
+    // pour la modification, sans qu'il ressaisit à 0 
+    @GetMapping("/get")
+    public ResponseEntity<?> getFiche(@RequestParam Long professeurId){
+    	List<Voeux> voeux = ficheDeVoeuxService.getVoeuxDuProf(professeurId);
+    	return ResponseEntity.ok(voeux);
+    }
 
+    // dès qu'il coche la case de remplir les choix de l'annee precedente, le frontend les recupere du backend et les affiche (rempli le formulaire)
+    @PutMapping("/formulaire-choix")
+    public ResponseEntity<?> preRemplirFormulaireAnneePrecedente(@RequestParam Long professeurId, @RequestParam boolean copierAnneePrecedente) {
+        List<Voeux> choixAnneePrecedente = null;
+
+        if (copierAnneePrecedente) {
+            choixAnneePrecedente = ficheDeVoeuxService.getChoixAnneePrecedente(professeurId);
+        }
+        // Retourner les choix pour le frontend
+        return ResponseEntity.ok(choixAnneePrecedente);
+    }
 }

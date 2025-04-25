@@ -1,6 +1,7 @@
 package com.departement.fichedevoeux.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 
 @Entity
 @Table(name = "besoins_prof")
@@ -34,9 +35,11 @@ public class BesoinsProf {
     @Column(name = "nbr_heures_supp_s2")
     private Integer nbrHeuresSuppS2;
 
+    @Min(value = 1, message = "Le nombre de PFE Licence doit etre au moins 1")
     @Column(name = "nbr_pfe_licence")
     private Integer nbrPfeLicence;
 
+    @Min(value = 1, message = "Le nombre de PFE Master doit etre au moins 1")
     @Column(name = "nbr_pfe_master")
     private Integer nbrPfeMaster;
 
