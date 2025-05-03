@@ -45,7 +45,7 @@ public class AdminController {
             return ResponseEntity.status(403).body("Access denied: not a department head");
         }
         byte[] fichier = adminService.exporterExcel();
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachement; filename=voeux.xlsx\"").body(fichier);
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=voeux.xlsx\"").body(fichier);
     }
     //see if the deadline is active
     @GetMapping("/deadline")

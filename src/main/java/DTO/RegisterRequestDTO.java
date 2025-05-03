@@ -8,6 +8,18 @@ public class RegisterRequestDTO {
     private String password;
     private String nom;
     private  String departement;
+    
+	public RegisterRequestDTO() {
+		super();
+	}
+	
+	public RegisterRequestDTO(String email, String password, String nom, String departement) {
+		super();
+		this.email = email;
+		this.password = password;
+		this.nom = nom;
+		this.departement = departement;
+	}
 	public String getEmail() {
 		return email;
 	}

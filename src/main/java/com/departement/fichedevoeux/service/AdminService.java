@@ -1,13 +1,20 @@
 package com.departement.fichedevoeux.service;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.List;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.departement.fichedevoeux.model.Parametre;
 import com.departement.fichedevoeux.model.Professeur;
+import com.departement.fichedevoeux.model.Voeux;
 import com.departement.fichedevoeux.repository.FicheDeVoeuxRepository;
 import com.departement.fichedevoeux.repository.ParametreRepository;
 import com.departement.fichedevoeux.repository.ProfesseurRepository;
@@ -46,8 +53,36 @@ public class AdminService {
     }
 
     // Simulation de l’export Excel (remplacer par POI plus tard)
-    public byte[] exporterExcel() {
-        // Ici tu ajouteras la génération réelle avec Apache POI ( la construction du fichier)
-       return null ; // remplace null plus tard
+    public byte[] exporterExcel(){
+    	try {
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Voeux");
+
+        Row header = sheet.createRow(0);
+        header.createCell(0).setCellValue("Professeur");
+        header.createCell(1).setCellValue("Module");
+        header.createCell(2).setCellValue("Semestre");
+        header.createCell(3).setCellValue("Nature");
+
+        List<Voeux> voeuxList = ficheDeVoeuxRepository.findAll();
+        int rowIndex = 1;
+
+        for (Voeux v : voeuxList) {
+            Row row = sheet.createRow(rowIndex++);
+            row.createCell(0).setCellValue(v.getProfesseur().getNom());
+            row.createCell(1).setCellValue(v.getModule().getNom());
+            row.createCell(2).setCellValue(v.getSemestre());
+            row.createCell(3).setCellValue(v.getNature());
+        }
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+ 
+			workbook.write(out);
+			return out.toByteArray();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
     }
 }
