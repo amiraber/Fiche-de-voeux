@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.departement.fichedevoeux.FichedevoeuxApplication;
@@ -25,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import DTO.LoginRequestDTO;
 import DTO.RegisterRequestDTO;
 
+@ActiveProfiles("test")
 @WebMvcTest(AuthController.class)
 @Import(TestSecurityConfig.class)
 

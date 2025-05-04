@@ -125,12 +125,12 @@ public class FicheDeVoeuxService {
     
     
     // Filtrer les modules par semestre, pallier et spécialité
-    public List<Module> filterModules(int semestre, String pallier, String specialite) {
+    public List<Module> filterModules(String semestre, String pallier, String specialite) {
         return moduleRepository.findBySemestreAndPallierAndSpecialite(semestre, pallier, specialite);
     }
 
     // Filtrer les spécialités par semestre et pallier 
-    public List<String> filterSpecialites(int semestre, String pallier) {
+    public List<String> filterSpecialites(String semestre, String pallier) {
         return moduleRepository.findDistinctSpecialitesBySemestreAndPallier(semestre, pallier);
     }
 }

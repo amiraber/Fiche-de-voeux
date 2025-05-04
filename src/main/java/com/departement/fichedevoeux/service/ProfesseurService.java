@@ -68,7 +68,7 @@ public class ProfesseurService {
         dto.setId(prof.getId());
         dto.setNom(prof.getNom());
         dto.setEmail(prof.getEmail());
-        dto.setDepartement(prof.getDepartement().getNom());
+        dto.setDepartement(prof.getDepartement().getNomDepartement());
         return dto;
     }
     

@@ -13,7 +13,7 @@ public class Departement {
 	private Long id;
 	
 	@Column(name = "nom_departement", nullable = false)
-	private String nom;
+	private String nomDepartement;
 
 	@OneToMany(mappedBy = "departement", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Professeur> professeurs = new ArrayList<>();
@@ -21,8 +21,8 @@ public class Departement {
 	// Constructeurs :
 	public Departement() {}
 
-	public Departement(String nom) {
-	    this.nom = nom;
+	public Departement(String nomDepartement) {
+	    this.nomDepartement = nomDepartement;
 	}
 
 	// Getters et Setters :
@@ -34,12 +34,12 @@ public class Departement {
 		this.id = id; 
 	}
 
-	public String getNom() { 
-		return nom; 
+	public String getNomDepartement() { 
+		return nomDepartement; 
 	}
 	
-	public void setNom(String nom) { 
-		this.nom = nom;
+	public void setNomDepartement(String nomDepartement) { 
+		this.nomDepartement = nomDepartement;
 	}
 
 	public List<Professeur> getProfesseurs() { 

@@ -53,6 +53,6 @@ public class MessageService {
     // ✅ Charger tous les messages d’une conversation
     public List<Message> getMessagesParConversation(Long conversationId) {
         if (conversationId == null) return List.of();
-        return messageRepository.findByConversationId(conversationId.intValue());
+        return messageRepository.findByConversationIdConversation(conversationId.intValue());
     }
 }

@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MessageRepository extends JpaRepository<Message, Integer> {
 	List<Message> findByAuteurId(Long id);
-	List<Message> findByConversationId(Integer conversationid);
+	List<Message> findByConversationIdConversation(Integer idConversation);
 }

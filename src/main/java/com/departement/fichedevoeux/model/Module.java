@@ -11,7 +11,7 @@ public class Module {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_module")
-    private int idModule;
+    private Long idModule;
 
     @Column(nullable = false)
     private String pallier;
@@ -33,11 +33,11 @@ public class Module {
         this.nom = nom;
     }
 
-    public int getIdModule() {
+    public Long getIdModule() {
         return idModule;
     }
 
-    public void setIdModule(int idModule) {
+    public void setIdModule(Long idModule) {
         this.idModule = idModule;
     }
 

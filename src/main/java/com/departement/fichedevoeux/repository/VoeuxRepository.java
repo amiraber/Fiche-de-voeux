@@ -12,7 +12,7 @@ public interface VoeuxRepository extends JpaRepository<Voeux, Integer> {
 
 	    List<Voeux> findBySemestre(Integer semestre);
 	    
-	    List<Voeux> findByModuleId(Long id);
+	    List<Voeux> findByModuleIdModule(Long idModule);
 
 		List<Voeux> findByProfesseurIdAndAnnee(Long id, int annee);
 }

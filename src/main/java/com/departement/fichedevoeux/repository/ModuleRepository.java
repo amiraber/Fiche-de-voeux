@@ -12,11 +12,11 @@ import org.springframework.stereotype.Repository;
 public interface ModuleRepository extends JpaRepository <Module, Integer> {
 	
 	// Filtrer les modules en fonction du semestre, pallier et spécialité
-    List<Module> findBySemestreAndPallierAndSpecialite(int semestre, String pallier, String specialite);
+    List<Module> findBySemestreAndPallierAndSpecialite(String semestre, String pallier, String specialite);
 
     // Obtenir la liste distincte des spécialités en fonction du semestre et pallier
     @Query("SELECT DISTINCT m.specialite FROM Module m WHERE m.semestre = :semestre AND m.pallier = :pallier")
-    List<String> findDistinctSpecialitesBySemestreAndPallier(@Param("semestre") int semestre, @Param("pallier") String pallier);
+    List<String> findDistinctSpecialitesBySemestreAndPallier(@Param("semestre") String semestre, @Param("pallier") String pallier);
 
     // rechercher des modules par leurs noms
 	List<Module> findByNomIn(List<String> noms);
