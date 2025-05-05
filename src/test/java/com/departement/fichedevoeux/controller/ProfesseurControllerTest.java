@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -24,7 +24,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = ProfesseurController.class)
+//@WebMvcTest(controllers = ProfesseurController.class)
+@SpringBootTest
 @AutoConfigureMockMvc(addFilters = false) // <--- disables Spring Security filters
 //@WebMvcTest(ProfesseurController.class)
 public class ProfesseurControllerTest {
@@ -33,7 +34,7 @@ public class ProfesseurControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ProfesseurService professeurService;
+    private ProfesseurService professeurService; // Mocks the service layer for testing
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -129,7 +130,7 @@ public class ProfesseurControllerTest {
             .andExpect(status().isOk())
             .andExpect(content().string("Email déjà utilisé"));
     }
-   
+    @WithMockUser(username = "chef1", roles = "CHEF") // or the role you require
     @Test
     void shouldUpdateEmailPrefSuccessfully() throws Exception {
         when(professeurService.updateEmailPref(1L, "pref@univ.com")).thenReturn(true);
