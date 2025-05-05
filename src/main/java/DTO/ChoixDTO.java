@@ -6,6 +6,14 @@ public class ChoixDTO {
     private String specialite;
     private String module;
     private String nature; // "Cours", "TD", "TP"
+    
+	public ChoixDTO(String palier, String specialite, String module, String nature) {
+		super();
+		this.palier = palier;
+		this.specialite = specialite;
+		this.module = module;
+		this.nature = nature;
+	}
 	public String getPalier() {
 		return palier;
 	}

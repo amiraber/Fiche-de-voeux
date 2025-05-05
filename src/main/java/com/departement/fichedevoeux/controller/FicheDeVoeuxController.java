@@ -62,11 +62,10 @@ private final FicheDeVoeuxService ficheDeVoeuxService;
     // dès qu'il coche la case de remplir les choix de l'annee precedente, le frontend les recupere du backend et les affiche (rempli le formulaire)
     @PutMapping("/formulaire-choix")
     public ResponseEntity<?> preRemplirFormulaireAnneePrecedente(@RequestParam Long professeurId, @RequestParam boolean copierAnneePrecedente) {
-        List<Voeux> choixAnneePrecedente = null;
-
-        if (copierAnneePrecedente) {
-            choixAnneePrecedente = ficheDeVoeuxService.getChoixAnneePrecedente(professeurId);
-        }
+       
+    	List<Voeux> choixAnneePrecedente = copierAnneePrecedente ?  choixAnneePrecedente = 
+    			ficheDeVoeuxService.getChoixAnneePrecedente(professeurId) : List.of();
+    	
         // Retourner les choix pour le frontend
         return ResponseEntity.ok(choixAnneePrecedente);
     }
