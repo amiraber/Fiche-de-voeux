@@ -1,34 +1,32 @@
 package com.departement.fichedevoeux.controller;
 
-import java.util.Collections;
+import com.departement.fichedevoeux.service.ProfesseurService;
+import DTO.ProfesseurDTO;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 
-import com.departement.fichedevoeux.config.SecurityConfig;
-import com.departement.fichedevoeux.model.Professeur;
-import com.departement.fichedevoeux.service.ProfesseurService;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+
+import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.mockito.Mockito.when;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import DTO.ProfesseurDTO;
-
-
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
+@WebMvcTest(controllers = ProfesseurController.class)
+@AutoConfigureMockMvc(addFilters = false) // <--- disables Spring Security filters
+//@WebMvcTest(ProfesseurController.class)
 public class ProfesseurControllerTest {
 
     @Autowired
@@ -37,76 +35,127 @@ public class ProfesseurControllerTest {
     @MockBean
     private ProfesseurService professeurService;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Test
-    public void testGetAll_ShouldReturn200() throws Exception {
-        when(professeurService.getAll()).thenReturn(Collections.emptyList());
+    void shouldReturnListOfProfesseurs() throws Exception {
+        ProfesseurDTO prof1 = new ProfesseurDTO();
+        prof1.setId(1L);
+        prof1.setNom("Doe");
+        prof1.setEmail("doe@example.com");
+
+        List<ProfesseurDTO> profs = Arrays.asList(prof1);
+        when(professeurService.getAll()).thenReturn(profs);
 
         mockMvc.perform(get("/api/professeurs"))
-               .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].nom").value("Doe"));
     }
 
     @Test
-    public void testGetById_ShouldReturn200() throws Exception {
-        Long id = 1L;
-        when(professeurService.getById(id)).thenReturn(new ProfesseurDTO());
+    void shouldReturnProfesseurById() throws Exception {
+        ProfesseurDTO prof = new ProfesseurDTO();
+        prof.setId(1L);
+        prof.setNom("Smith");
 
-        mockMvc.perform(get("/api/professeurs/{id}", id))
-               .andExpect(status().isOk());
+        when(professeurService.getById(1L)).thenReturn(prof);
+
+        mockMvc.perform(get("/api/professeurs/1"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.nom").value("Smith"));
     }
 
     @Test
-    public void testGetByEmail_ShouldReturn200() throws Exception {
-        String email = "test@example.com";
-        when(professeurService.getByEmail(email)).thenReturn(new ProfesseurDTO());
+    void shouldReturnProfesseurByEmail() throws Exception {
+        ProfesseurDTO prof = new ProfesseurDTO();
+        prof.setId(2L);
+        prof.setEmail("test@univ.com");
 
-        mockMvc.perform(get("/api/professeurs/by-email").param("email", email))
-               .andExpect(status().isOk());
+        when(professeurService.getByEmail("test@univ.com")).thenReturn(prof);
+
+        mockMvc.perform(get("/api/professeurs/by-email")
+                .param("email", "test@univ.com"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.email").value("test@univ.com"));
     }
 
     @Test
-    public void testGetByDepartment_ShouldReturn200() throws Exception {
-        Long depId = 2L;
-        when(professeurService.getByDepartement(depId)).thenReturn(Collections.emptyList());
+    void shouldReturnProfesseursByDepartement() throws Exception {
+        ProfesseurDTO prof = new ProfesseurDTO();
+        prof.setDepartement("Informatique");
 
-        mockMvc.perform(get("/api/professeurs/by-departement/{id}", depId))
-               .andExpect(status().isOk());
+        when(professeurService.getByDepartement(5L)).thenReturn(List.of(prof));
+
+        mockMvc.perform(get("/api/professeurs/by-departement/5"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].departement").value("Informatique"));
     }
 
     @Test
-    public void testGetChefs_ShouldReturn200() throws Exception {
-        when(professeurService.getChefs()).thenReturn(Collections.emptyList());
+    void shouldReturnListOfChefs() throws Exception {
+        ProfesseurDTO prof = new ProfesseurDTO();
+        prof.setNom("Chef");
+
+        when(professeurService.getChefs()).thenReturn(List.of(prof));
 
         mockMvc.perform(get("/api/professeurs/chef"))
-               .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].nom").value("Chef"));
     }
 
     @Test
-    public void testCreate_ShouldReturnSuccessMessage() throws Exception {
-        Professeur prof = new Professeur();
+    void shouldCreateProfesseurSuccessfully() throws Exception {
         when(professeurService.createProfesseur(any())).thenReturn(true);
+
+        String json = "{\"nom\":\"Doe\", \"email\":\"doe@univ.com\"}";
 
         mockMvc.perform(post("/api/professeurs")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(prof)))
-               .andExpect(status().isOk())
-               .andExpect(content().string("Professeur créé avec succès"));
+                .content(json))
+            .andExpect(status().isOk())
+            .andExpect(content().string("Professeur créé avec succès"));
     }
 
     @Test
-    public void testUpdateEmailPref_ShouldReturn200() throws Exception {
-        when(professeurService.updateEmailPref(1L, "pref@mail.com")).thenReturn(true);
+    void shouldFailToCreateProfesseurWhenEmailExists() throws Exception {
+        when(professeurService.createProfesseur(any())).thenReturn(false);
+
+        String json = "{\"nom\":\"Doe\", \"email\":\"used@univ.com\"}";
+
+        mockMvc.perform(post("/api/professeurs")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+            .andExpect(status().isOk())
+            .andExpect(content().string("Email déjà utilisé"));
+    }
+   
+    @Test
+    void shouldUpdateEmailPrefSuccessfully() throws Exception {
+        when(professeurService.updateEmailPref(1L, "pref@univ.com")).thenReturn(true);
 
         mockMvc.perform(put("/api/professeurs/emai-Pref")
                 .param("profId", "1")
-                .param("emailPref", "pref@mail.com"))
-               .andExpect(status().isOk())
-               .andExpect(content().string("Email préféré mis à jour"));
+                .param("emailPref", "pref@univ.com"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("Email préféré mis à jour"));
     }
 
     @Test
-    public void testHello_ShouldReturnWorkingMessage() throws Exception {
+    void shouldFailToUpdateEmailPrefIfProfNotFound() throws Exception {
+        when(professeurService.updateEmailPref(99L, "notfound@univ.com")).thenReturn(false);
+
+        mockMvc.perform(put("/api/professeurs/emai-Pref")
+                .param("profId", "99")
+                .param("emailPref", "notfound@univ.com"))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string("Professeur introuvable"));
+    }
+
+    @Test
+    void shouldReturnTestMessage() throws Exception {
         mockMvc.perform(get("/api/professeurs/test"))
-               .andExpect(status().isOk())
-               .andExpect(content().string("Professeur Controller is working!"));
+            .andExpect(status().isOk())
+            .andExpect(content().string("Professeur Controller is working!"));
     }
 }
