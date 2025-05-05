@@ -3,6 +3,7 @@ package com.departement.fichedevoeux.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,6 +40,7 @@ public class AdminController {
     }
     
     //exports data (Fiche de Vœux submissions)
+    @PreAuthorize("hasRole('CHEF')")
     @GetMapping("/export")
     public ResponseEntity<?> exportExcel(@RequestParam Long profId) {
         if (!adminService.isChef(profId)) {
@@ -49,11 +51,13 @@ public class AdminController {
     }
     //see if the deadline is active
     @GetMapping("/deadline")
+    @PreAuthorize("hasRole('CHEF')")
     public ResponseEntity<?> getDeadlineStatus() {
         return ResponseEntity.ok("Deadline is active");
     }
 
     //admin can set/change the deadline
+    @PreAuthorize("hasRole('CHEF')")
     @PostMapping("/deadline")
     public ResponseEntity<?> setDeadline(@RequestParam Long profId, @RequestBody DeadlineRequestDTO deadlineRequest) {
         if (!isUserChef(profId)) {
