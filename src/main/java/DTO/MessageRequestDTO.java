@@ -15,8 +15,8 @@ public class MessageRequestDTO {
     public Long getConversationId() {
         return conversationId;
     }
-    public void setConversationId(Long conversationId) {
-        this.conversationId = conversationId;
+    public void setConversationId(long l) {
+        this.conversationId = (long) l;
     }
 
     public String getContent() {

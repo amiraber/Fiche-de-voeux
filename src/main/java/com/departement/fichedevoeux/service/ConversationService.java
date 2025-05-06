@@ -9,6 +9,8 @@ import DTO.ConversationRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -24,6 +26,10 @@ public class ConversationService {
 
     // Créer une conversation
     public boolean creerConversation(ConversationRequestDTO dto) {
+    	
+    	
+    	System.out.println(">>> Service layer reached: creating conversation");
+   
         if (dto.getInitiateurId() == null || dto.getSujet() == null || dto.getSujet().isEmpty()) {
             return false;
         }

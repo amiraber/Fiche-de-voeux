@@ -28,6 +28,7 @@ public class MessagerieController {
     // Créer une conversation
     @PostMapping("/conversations/create")
     public ResponseEntity<?> creerConversation(@RequestBody ConversationRequestDTO request) {
+    	System.out.println(">>> Controller reached"); // Debug 1
         boolean ok = conversationService.creerConversation(request);
         return ok ? ResponseEntity.ok("Conversation créée")
                   : ResponseEntity.badRequest().body("Échec création");
