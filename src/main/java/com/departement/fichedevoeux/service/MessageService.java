@@ -14,8 +14,13 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class MessageService {
+	
+	private static final Logger log = LoggerFactory.getLogger(MessageService.class);
 
     @Autowired
     private MessageRepository messageRepository;
@@ -28,6 +33,9 @@ public class MessageService {
 
     // ✅ Envoyer un message dans une conversation
     public boolean envoyerMessage(MessageRequestDTO dto) {
+    	
+    	log.info(">>>>>SERVICE MESSAGE SEND MESSAGE METHOD REACHED ✅");
+    	
         if (dto == null || dto.getSenderId() == null || dto.getConversationId() == null || dto.getContent() == null || dto.getContent().isEmpty()) {
             return false;
         }
@@ -52,7 +60,13 @@ public class MessageService {
 
     // ✅ Charger tous les messages d’une conversation
     public List<Message> getMessagesParConversation(Long conversationId) {
+    	log.info(">>>>>SERVICE MESSAGE GET MESSAGE METHOD REACHED ✅");
         if (conversationId == null) return List.of();
-        return messageRepository.findByConversationIdConversation(conversationId.intValue());
+        
+        List<Message> list = messageRepository.findByConversationIdConversation(conversationId.intValue());
+        log.info("✅ Messages found in service: {}", list);
+        return list;
+       
+        //return messageRepository.findByConversationIdConversation(conversationId.intValue());
     }
 }

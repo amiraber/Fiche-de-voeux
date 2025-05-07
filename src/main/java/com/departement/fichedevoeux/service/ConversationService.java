@@ -15,8 +15,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 @Service
 public class ConversationService {
+	
+	private static final Logger log = LoggerFactory.getLogger(ConversationService.class);
 
     @Autowired
     private ConversationRepository conversationRepository;
@@ -28,7 +34,10 @@ public class ConversationService {
     public boolean creerConversation(ConversationRequestDTO dto) {
     	
     	
-    	System.out.println(">>> Service layer reached: creating conversation");
+    	
+
+    	log.info(">>>>>SERVICE METHOD REACHED ✅");
+
    
         if (dto.getInitiateurId() == null || dto.getSujet() == null || dto.getSujet().isEmpty()) {
             return false;
@@ -51,8 +60,18 @@ public class ConversationService {
 
     // Charger toutes les conversations d’un prof
     public List<Conversation> getConversationsParProf(Long profId) {
-        if (profId == null) return List.of();
-        return conversationRepository.findByInitiateurId(profId);
+    	
+    	log.info(">>>>>SERVICE METHOD REACHED for get conversation ✅");
+    	
+        if (profId == null) {
+        	
+        	log.info("pas de conversation");
+        	return List.of();
+        }
+      //  return conversationRepository.findByInitiateurId(profId);
+        List<Conversation> list = conversationRepository.findByInitiateurId(profId);
+        log.info("🟢 Conversations found for Prof ID {}: {}", profId, list);
+        return list;
     }
 }
 
