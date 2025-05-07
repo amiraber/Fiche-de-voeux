@@ -7,17 +7,15 @@ public class RegisterRequestDTO {
 	private String email;
     private String password;
     private String nom;
-    private  String departement;
+    private String prenom;
     
-	public RegisterRequestDTO() {
-		super();
-	}
 	
-	public RegisterRequestDTO(String email, String password, String nom, String departement) {
+	public RegisterRequestDTO(String email, String password, String nom, String prenom, String departement) {
 		super();
 		this.email = email;
 		this.password = password;
 		this.nom = nom;
+		this.prenom = prenom;
 		this.departement = departement;
 	}
 	public String getEmail() {
@@ -37,6 +35,18 @@ public class RegisterRequestDTO {
 	}
 	public void setNom(String nom) {
 		this.nom = nom;
+	}
+	public String getPrenom() {
+		return prenom;
+	}
+
+	public void setPrenom(String prenom) {
+		this.prenom = prenom;
+	}
+	private  String departement;
+    
+	public RegisterRequestDTO() {
+		super();
 	}
 	public String getDepartement() {
 		return departement;

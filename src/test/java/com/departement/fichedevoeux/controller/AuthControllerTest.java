@@ -39,7 +39,7 @@ public class AuthControllerTest {
     private AuthService authService;
     @Test
     public void testRegisterSuccess() throws Exception {
-        RegisterRequestDTO request = new RegisterRequestDTO("amira@gmail.com", "password123", "Berrrabah Amira", "IA");
+        RegisterRequestDTO request = new RegisterRequestDTO("amira@gmail.com", "password123", "Berrrabah Amira","momi", "IA");
 
         when(authService.register(any(RegisterRequestDTO.class))).thenReturn(true);
 
@@ -52,7 +52,7 @@ public class AuthControllerTest {
 
     @Test
     public void testRegisterEmailUsed() throws Exception {
-        RegisterRequestDTO request = new RegisterRequestDTO("amira@gmail.com", "password123", "Amira", "CS");
+        RegisterRequestDTO request = new RegisterRequestDTO("amira@gmail.com", "password123", "Amira", "momi","CS");
 
         when(authService.register(any(RegisterRequestDTO.class))).thenReturn(false);
 
@@ -88,4 +88,6 @@ public class AuthControllerTest {
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("Invalid Email or password"));
     }
+    
+   
 }

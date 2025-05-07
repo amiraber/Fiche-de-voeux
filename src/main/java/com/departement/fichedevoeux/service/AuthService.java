@@ -12,17 +12,29 @@ import com.departement.fichedevoeux.repository.ProfesseurRepository;
 import DTO.LoginRequestDTO;
 import DTO.RegisterRequestDTO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class AuthService {
+	
+	private static final Logger log = LoggerFactory.getLogger(AuthService.class);
 
     @Autowired
     private ProfesseurRepository professeurRepository;
+    
+    @Autowired
     private DepartementRepository departementRepository;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    
+   
 
     // Inscription 
     public boolean register(RegisterRequestDTO dto) {
+    	
+    	log.info(">>>>>✅ authservice accessed successfully for registration");
+    	
         if (dto.getEmail() == null || dto.getPassword() == null) return false;
 
         // il verifie si le compte existe déjà
@@ -39,6 +51,7 @@ public class AuthService {
         prof.setEmail(dto.getEmail());
         prof.setMotDePasse(passwordEncoder.encode(dto.getPassword()));
         prof.setNom(dto.getNom());
+        prof.setPrenom(dto.getPrenom());
         prof.setDepartement(dept);
         prof.setChef(false); // par défaut pas chef
 
@@ -48,6 +61,9 @@ public class AuthService {
 
     // Connexion
     public boolean login(LoginRequestDTO dto) {
+    	
+    	log.info(">>>>>✅ authservice accessed successfully for login");
+    	
         Professeur prof = professeurRepository.findByEmail(dto.getEmail());
         if (prof == null) return false;
 
