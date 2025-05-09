@@ -1,9 +1,12 @@
 package com.departement.fichedevoeux.controller;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,27 +43,47 @@ public class AdminController {
     }
     
     //exports data (Fiche de Vœux submissions)
-    @PreAuthorize("hasRole('CHEF')")
+   
     @GetMapping("/export")
-    public ResponseEntity<?> exportExcel(@RequestParam Long profId) {
-        if (!adminService.isChef(profId)) {
-            return ResponseEntity.status(403).body("Access denied: not a department head");
-        }
+    @PreAuthorize("hasRole('CHEF_DEP')")
+    public ResponseEntity<?> exportExcel(Authentication authentication) {
+
+    	
+    	 String email = authentication.getName(); // this is the email from UserDetails
+    	 Professeur prof = professeurRepository.findByEmail(email);
+    	
+    	if (prof == null || !prof.isChef()) {
+    	    return ResponseEntity.status(403).body("Access denied: not a department head");
+    	}
+        
         byte[] fichier = adminService.exporterExcel();
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=voeux.xlsx\"").body(fichier);
     }
+    
+    
     //see if the deadline is active
     @GetMapping("/deadline")
-    @PreAuthorize("hasRole('CHEF')")
+    @PreAuthorize("hasRole('CHEF_DEP')")
     public ResponseEntity<?> getDeadlineStatus() {
-        return ResponseEntity.ok("Deadline is active");
+    	 LocalDate deadline = adminService.getDeadline();
+    	    if (deadline != null) {
+    	        return ResponseEntity.ok("Deadline is active: " + deadline.toString());
+    	    } else {
+    	        return ResponseEntity.ok("No deadline set");
+    	    }
+       
     }
 
     //admin can set/change the deadline
-    @PreAuthorize("hasRole('CHEF')")
+   
     @PostMapping("/deadline")
-    public ResponseEntity<?> setDeadline(@RequestParam Long profId, @RequestBody DeadlineRequestDTO deadlineRequest) {
-        if (!isUserChef(profId)) {
+    @PreAuthorize("hasRole('CHEF_DEP')")
+    public ResponseEntity<?> setDeadline(@RequestBody DeadlineRequestDTO deadlineRequest, Authentication authentication) {
+    	
+    	 String email = authentication.getName();
+    	    Professeur prof = professeurRepository.findByEmail(email);
+    	
+        if (prof == null || !prof.isChef()) {
             return ResponseEntity.status(403).body("Access denied: not a department head");
         }
         boolean success = adminService.setDeadline(deadlineRequest.getDeadline());

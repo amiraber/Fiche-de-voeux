@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ModuleRepository extends JpaRepository <Module, Integer> {
+public interface ModuleRepository extends JpaRepository <Module, Long> {
 	
 	// Filtrer les modules en fonction du semestre, pallier et spécialité
     List<Module> findBySemestreAndPallierAndSpecialite(String semestre, String pallier, String specialite);

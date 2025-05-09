@@ -1,6 +1,7 @@
 package com.departement.fichedevoeux.service;
 
 import java.io.IOException;
+
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
@@ -19,8 +20,13 @@ import com.departement.fichedevoeux.repository.FicheDeVoeuxRepository;
 import com.departement.fichedevoeux.repository.ParametreRepository;
 import com.departement.fichedevoeux.repository.ProfesseurRepository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class AdminService {
+	
+	private static final Logger log = LoggerFactory.getLogger(AdminService.class);
 
     @Autowired
     private ProfesseurRepository professeurRepository;
@@ -34,12 +40,18 @@ public class AdminService {
 
     // Vérifie si un professeur est chef de département
     public boolean isChef(Long profId) {
+    	
+    	
+    	
         Professeur prof = professeurRepository.findById(profId).orElse(null);
         return prof != null && prof.isChef();
     }
 
     // Mise à jour ou création de la deadline
     public boolean setDeadline(LocalDate nouvelleDate) {
+    	
+    	log.info("✅ set deadline method acceessed succesfully");
+    	
         Parametre param = new Parametre();
         param.setDeadline(nouvelleDate);
         parametreRepository.save(param);
@@ -48,6 +60,9 @@ public class AdminService {
 
     // Récupération de la deadline active
     public LocalDate getDeadline() {
+    	
+    	log.info("✅ get deadline method acceessed succesfully");
+    	
         Parametre dernier = parametreRepository.findTopByOrderByIdDesc();
         return (dernier != null) ? dernier.getDeadline() : null;
     }
@@ -55,6 +70,9 @@ public class AdminService {
     // Simulation de l’export Excel (remplacer par POI plus tard)
     public byte[] exporterExcel(){
     	try {
+    		
+    		log.info("✅ export excel method acceessed succesfully");
+    		
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Voeux");
 
