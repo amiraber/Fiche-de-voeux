@@ -1,7 +1,5 @@
 package DTO;
 
-import com.departement.fichedevoeux.model.Grade;
-
 public class ProfesseurDTO {
 	
     private Long id;
@@ -9,9 +7,6 @@ public class ProfesseurDTO {
     private String prenom;
     private String email;
     private String departement;
-    private Grade grade;
-    private int numBureau;
-    private String emailPref;
     
 	public Long getId() {
 		return id;
@@ -42,24 +37,6 @@ public class ProfesseurDTO {
 	}
 	public void setDepartement(String departement) {
 		this.departement = departement;
-	}
-	public Grade getGrade() {
-		return grade;
-	}
-	public void setGrade(Grade grade) {
-		this.grade = grade;
-	}
-	public int getNumBureau() {
-		return numBureau;
-	}
-	public void setNumBureau(int numBureau) {
-		this.numBureau = numBureau;
-	}
-	public String getEmailPref() {
-		return emailPref;
-	}
-	public void setEmailPref(String emailPref) {
-		this.emailPref = emailPref;
 	}
     
     

@@ -20,9 +20,6 @@ public class BesoinsProf {
     @Column(name = "annee_scolaire")
     private String anneeScolaire;
 
-    @Column(name = "email_prefere")
-    private String emailPrefere;
-
     @Column(name = "heures_supp_s1")
     private Integer heuresSuppS1;
 
@@ -50,14 +47,13 @@ public class BesoinsProf {
 
     // Getters et setters
 
-    public BesoinsProf(Long idBesoins, Professeur professeur, String anneeScolaire, String emailPrefere,
+    public BesoinsProf(Long idBesoins, Professeur professeur, String anneeScolaire,
 			Integer heuresSuppS1, Integer heuresSuppS2, Integer nbrHeuresSuppS1, Integer nbrHeuresSuppS2,
 			Integer nbrPfeLicence, Integer nbrPfeMaster, String statut) {
 		super();
 		this.idBesoins = idBesoins;
 		this.professeur = professeur;
 		this.anneeScolaire = anneeScolaire;
-		this.emailPrefere = emailPrefere;
 		this.heuresSuppS1 = heuresSuppS1;
 		this.heuresSuppS2 = heuresSuppS2;
 		this.nbrHeuresSuppS1 = nbrHeuresSuppS1;
@@ -89,14 +85,6 @@ public class BesoinsProf {
 
     public void setAnneeScolaire(String anneeScolaire) {
         this.anneeScolaire = anneeScolaire;
-    }
-
-    public String getEmailPrefere() {
-        return emailPrefere;
-    }
-
-    public void setEmailPrefere(String emailPrefere) {
-        this.emailPrefere = emailPrefere;
     }
 
     public Integer getHeuresSuppS1() {

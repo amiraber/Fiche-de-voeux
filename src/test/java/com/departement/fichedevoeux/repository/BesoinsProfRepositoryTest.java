@@ -33,7 +33,6 @@ public class BesoinsProfRepositoryTest {
         BesoinsProf besoin = new BesoinsProf();
         besoin.setProfesseur(prof);
         besoin.setAnneeScolaire("2024/2025");
-        besoin.setEmailPrefere("john.doe@univ.com");
         besoin.setHeuresSuppS1(1);
         besoin.setHeuresSuppS2(1);
         besoin.setNbrHeuresSuppS1(5);
@@ -49,6 +48,5 @@ public class BesoinsProfRepositoryTest {
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getAnneeScolaire()).isEqualTo("2024/2025");
-        assertThat(result.get(0).getEmailPrefere()).isEqualTo("john.doe@univ.com");
     }
 }

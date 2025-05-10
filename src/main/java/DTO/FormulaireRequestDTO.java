@@ -2,6 +2,8 @@ package DTO;
 
 import java.util.List;
 
+import com.departement.fichedevoeux.model.Grade;
+
 public class FormulaireRequestDTO {
 
 	  private Long professeurId;
@@ -12,6 +14,10 @@ public class FormulaireRequestDTO {
 	    private int extraHoursS2;
 	    private int proposedLicence;
 	    private int prposedMaster;
+	    private Grade grade;
+	    private int numBureau;
+	    private String emailPref;
+	    
 	    
 		public Long getProfesseurId() {
 			return professeurId;
@@ -37,10 +43,10 @@ public class FormulaireRequestDTO {
 		public void setWantsExtraCourses(boolean wantsExtraCourses) {
 			this.wantsExtraCourses = wantsExtraCourses;
 		}
-		public int getExtraHours() {
+		public int getExtraHoursS1() {
 			return extraHoursS1;
 		}
-		public void setExtraHours(int extraHoursS1) {
+		public void setExtraHoursS1(int extraHoursS1) {
 			this.extraHoursS1 = extraHoursS1;
 		}
 		public int getExtraHoursS2() {
@@ -61,7 +67,24 @@ public class FormulaireRequestDTO {
 		public void setPrposedMaster(int prposedMaster) {
 			this.prposedMaster = prposedMaster;
 		}
-	    
+		public Grade getGrade() {
+			return grade;
+		}
+		public void setGrade(Grade grade) {
+			this.grade = grade;
+		}
+		public int getNumBureau() {
+			return numBureau;
+		}
+		public void setNumBureau(int numBureau) {
+			this.numBureau = numBureau;
+		}
+		public String getEmailPref() {
+			return emailPref;
+		}
+		public void setEmailPref(String emailPref) {
+			this.emailPref = emailPref;
+		}
 	    
 	
 }

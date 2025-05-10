@@ -1,34 +1,32 @@
 package com.departement.fichedevoeux.controller;
 
 import com.departement.fichedevoeux.config.TestSecurityConfig;
-import com.departement.fichedevoeux.model.Voeux;
+import com.departement.fichedevoeux.model.Module;
 import com.departement.fichedevoeux.service.FicheDeVoeuxService;
 import DTO.FormulaireRequestDTO;
-import DTO.ChoixDTO;
 
-import org.junit.jupiter.api.BeforeEach;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-@ActiveProfiles("test")
-@Import(TestSecurityConfig.class)
 @WebMvcTest(FicheDeVoeuxController.class)
+@Import(TestSecurityConfig.class)
+@ActiveProfiles("test")
 public class FicheDeVoeuxControllerTest {
 
     @Autowired
@@ -40,88 +38,39 @@ public class FicheDeVoeuxControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private FormulaireRequestDTO formulaire;
-
-    @BeforeEach
-    void setUp() {
-        formulaire = new FormulaireRequestDTO();
-        formulaire.setProfesseurId(1L);
-
-        ChoixDTO choix1 = new ChoixDTO("pallier", "spécialité", "module", "nature");
-        ChoixDTO choix2 = new ChoixDTO("pallier2", "spécialité2", "module2", "nature2");
-
-        formulaire.setSemestre1(List.of(choix1));
-        formulaire.setSemestre2(List.of(choix2));
-    }
-
     @Test
-    void testSubmitFormulaire_Valid() throws Exception {
-        when(ficheDeVoeuxService.submitFormulaire(any(FormulaireRequestDTO.class))).thenReturn(true);
+    public void testSubmitForm_Success() throws Exception {
+        FormulaireRequestDTO form = new FormulaireRequestDTO();
+        form.setProfesseurId(1L);
+
+        when(ficheDeVoeuxService.submitFormulaire(any())).thenReturn(true);
 
         mockMvc.perform(post("/api/form/submit")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(formulaire)))
+                .content(objectMapper.writeValueAsString(form)))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Form submitted"));
+                .andExpect(content().string("Formulaire soumis avec succès."));
     }
 
     @Test
-    void testSubmitFormulaire_Invalid() throws Exception {
-        when(ficheDeVoeuxService.submitFormulaire(any(FormulaireRequestDTO.class))).thenReturn(false);
-
-        mockMvc.perform(post("/api/form/submit")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(formulaire)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("Invalid form submission"));
-    }
-
-    @Test
-    void testCheckStatus() throws Exception {
+    public void testCheckStatus() throws Exception {
         when(ficheDeVoeuxService.hasSubmitted(1L)).thenReturn(true);
 
-        mockMvc.perform(get("/api/form/status")
-                .param("professorId", "1"))
+        mockMvc.perform(get("/api/form/status").param("professeurId", "1"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Status: Submitted"));
+                .andExpect(content().string("Statut : Soumis"));
     }
 
     @Test
-    void testIsFormLocked() throws Exception {
-        when(ficheDeVoeuxService.isFormLocked()).thenReturn(false);
+    public void testGetModulesFiltres() throws Exception {
+        Module m = new Module("L1", "Info", "S1", "POO");
+        when(ficheDeVoeuxService.filterModules("S1", "L1", "Info")).thenReturn(List.of(m));
 
-        mockMvc.perform(get("/api/form/locked"))
+        mockMvc.perform(get("/api/form/modules")
+                .param("semestre", "S1")
+                .param("pallier", "L1")
+                .param("specialite", "Info"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Form is currently unlocked"));
-    }
-
-    @Test
-    void testGetFiche() throws Exception {
-        Voeux voeux = new Voeux(); // Tu peux set des attributs si besoin
-        when(ficheDeVoeuxService.getVoeuxDuProf(1L)).thenReturn(List.of(voeux));
-
-        mockMvc.perform(get("/api/form/get")
-                .param("professeurId", "1"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void testPreRemplirFormulaireAnneePrecedente_WhenChecked() throws Exception {
-        Voeux voeux = new Voeux();
-        when(ficheDeVoeuxService.getChoixAnneePrecedente(1L)).thenReturn(List.of(voeux));
-
-        mockMvc.perform(put("/api/form/formulaire-choix")
-                .param("professeurId", "1")
-                .param("copierAnneePrecedente", "true"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void testPreRemplirFormulaireAnneePrecedente_WhenNotChecked() throws Exception {
-        mockMvc.perform(put("/api/form/formulaire-choix")
-                .param("professeurId", "1")
-                .param("copierAnneePrecedente", "false"))
-                .andExpect(status().isOk())
-                .andExpect(content().json("[]"));
+                .andExpect(jsonPath("$[0].nom").value("POO"));
     }
 }

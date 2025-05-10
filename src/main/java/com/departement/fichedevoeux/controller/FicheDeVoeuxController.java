@@ -1,72 +1,83 @@
 package com.departement.fichedevoeux.controller;
 
-import java.util.List;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.departement.fichedevoeux.model.Module;
 import com.departement.fichedevoeux.model.Voeux;
 import com.departement.fichedevoeux.service.FicheDeVoeuxService;
-
 import DTO.FormulaireRequestDTO;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/form")
-
 public class FicheDeVoeuxController {
 
-private final FicheDeVoeuxService ficheDeVoeuxService;
+    private final FicheDeVoeuxService ficheDeVoeuxService;
 
     public FicheDeVoeuxController(FicheDeVoeuxService ficheDeVoeuxService) {
         this.ficheDeVoeuxService = ficheDeVoeuxService;
     }
-    
-   //handles form submission for course preferences.
+
+    // 1. Soumettre la fiche de vœux
     @PostMapping("/submit")
     public ResponseEntity<?> submitForm(@RequestBody FormulaireRequestDTO form) {
         boolean submitted = ficheDeVoeuxService.submitFormulaire(form);
-        return submitted ? ResponseEntity.ok("Form submitted")
-                         : ResponseEntity.badRequest().body("Invalid form submission");
+        return submitted
+                ? ResponseEntity.ok("Formulaire soumis avec succès.")
+                : ResponseEntity.badRequest().body("Échec de la soumission du formulaire.");
     }
-    
-    
-    //checks if a professor submitted their fiche
+
+    // 2. Vérifier si le professeur a déjà soumis
     @GetMapping("/status")
-    public ResponseEntity<?> checkStatus(@RequestParam Long professorId) {
-        boolean hasSubmitted = ficheDeVoeuxService.hasSubmitted(professorId);
-        return ResponseEntity.ok("Status: " + (hasSubmitted ? "Submitted" : "Not submitted yet"));
+    public ResponseEntity<String> checkStatus(@RequestParam Long professeurId) {
+        boolean hasSubmitted = ficheDeVoeuxService.hasSubmitted(professeurId);
+        return ResponseEntity.ok("Statut : " + (hasSubmitted ? "Soumis" : "Non soumis"));
     }
 
-    //checks if the form is locked
+    // 3. Vérifier si le formulaire est verrouillé
     @GetMapping("/locked")
-    public ResponseEntity<?> isFormLocked() {
+    public ResponseEntity<String> isFormLocked() {
         boolean locked = ficheDeVoeuxService.isFormLocked();
-        return ResponseEntity.ok("Form is currently " + (locked ? "locked" : "unlocked"));
-    }
-    
-    
-    
-    // pour la modification, sans qu'il ressaisit à 0 
-    @GetMapping("/get")
-    public ResponseEntity<?> getFiche(@RequestParam Long professeurId){
-    	List<Voeux> voeux = ficheDeVoeuxService.getVoeuxDuProf(professeurId);
-    	return ResponseEntity.ok(voeux);
+        return ResponseEntity.ok("Formulaire actuellement " + (locked ? "verrouillé" : "déverrouillé"));
     }
 
-    // dès qu'il coche la case de remplir les choix de l'annee precedente, le frontend les recupere du backend et les affiche (rempli le formulaire)
+    // 4. Récupérer les choix du professeur (modification)
+    @GetMapping("/get")
+    public ResponseEntity<List<Voeux>> getFiche(@RequestParam Long professeurId) {
+        return ResponseEntity.ok(ficheDeVoeuxService.getVoeuxDuProf(professeurId));
+    }
+
+    // 5. Préremplir avec les choix de l'année précédente
     @PutMapping("/formulaire-choix")
-    public ResponseEntity<?> preRemplirFormulaireAnneePrecedente(@RequestParam Long professeurId, @RequestParam boolean copierAnneePrecedente) {
-       
-    	List<Voeux> choixAnneePrecedente = copierAnneePrecedente ?  choixAnneePrecedente = 
-    			ficheDeVoeuxService.getChoixAnneePrecedente(professeurId) : List.of();
-    	
-        // Retourner les choix pour le frontend
-        return ResponseEntity.ok(choixAnneePrecedente);
+    public ResponseEntity<List<Voeux>> preRemplirFormulaireAnneePrecedente(
+            @RequestParam Long professeurId,
+            @RequestParam boolean copierAnneePrecedente) {
+
+        List<Voeux> anciensChoix = copierAnneePrecedente
+                ? ficheDeVoeuxService.getChoixAnneePrecedente(professeurId)
+                : List.of();
+
+        return ResponseEntity.ok(anciensChoix);
+    }
+
+    // 6. Filtrer les modules selon semestre + pallier + spécialité
+    @GetMapping("/modules")
+    public ResponseEntity<List<Module>> getModulesFiltres(
+            @RequestParam String semestre,
+            @RequestParam String pallier,
+            @RequestParam String specialite) {
+
+        return ResponseEntity.ok(ficheDeVoeuxService.filterModules(semestre, pallier, specialite));
+    }
+
+    // 7. Obtenir la liste des spécialités disponibles pour un semestre et un pallier
+    @GetMapping("/specialites")
+    public ResponseEntity<List<String>> getSpecialitesFiltres(
+            @RequestParam String semestre,
+            @RequestParam String pallier) {
+
+        return ResponseEntity.ok(ficheDeVoeuxService.filterSpecialites(semestre, pallier));
     }
 }
