@@ -122,4 +122,6 @@ public class FicheDeVoeuxService {
         int year = LocalDate.now().getYear();
         return year + "-" + (year + 1);
     }
+    
+    
 }
