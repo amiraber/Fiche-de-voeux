@@ -1,5 +1,7 @@
 package com.departement.fichedevoeux.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -115,6 +117,7 @@ public class Professeur {
 		this.departement = departement;
 	}
 
+	@JsonProperty("isChef")
 	public boolean isChef() {
 		return isChef;
 	}
