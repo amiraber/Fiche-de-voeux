@@ -34,7 +34,7 @@ public class Professeur {
     @JoinColumn(name = "id_departement", nullable = false)
     private Departement departement;
 
-	@Column(name = "is_chef", columnDefinition = "INTEGER DEFAULT 0")
+	@Column(name = "is_chef")
     private boolean isChef;
 	
 	private int numBureau;
