@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.*;
 
+
 @Entity
 @Table(name = "professeur")
 
@@ -37,7 +38,7 @@ public class Professeur {
 	@Column(name = "is_chef")
     private boolean isChef;
 	
-	private int numBureau;
+	private Integer numBureau;
 	
 	private String emailPref;
 	
@@ -126,7 +127,7 @@ public class Professeur {
 		this.isChef = isChef;
 	}
 
-	public int getNumBureau() {
+	public Integer getNumBureau() {
 		return numBureau;
 	}
 

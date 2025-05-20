@@ -63,7 +63,7 @@ public class AdminController {
     
     //see if the deadline is active
     @GetMapping("/deadline")
-    @PreAuthorize("hasRole('CHEF_DEP')")
+   
     public ResponseEntity<?> getDeadlineStatus() {
     	 LocalDate deadline = adminService.getDeadline();
     	    if (deadline != null) {
@@ -77,15 +77,16 @@ public class AdminController {
     //admin can set/change the deadline
    
     @PostMapping("/deadline")
-    @PreAuthorize("hasRole('CHEF_DEP')")
-    public ResponseEntity<?> setDeadline(@RequestBody DeadlineRequestDTO deadlineRequest, Authentication authentication) {
+   
+    public ResponseEntity<?> setDeadline(@RequestBody DeadlineRequestDTO deadlineRequest) {
     	
-    	 String email = authentication.getName();
-    	    Professeur prof = professeurRepository.findByEmail(email);
+    	Long profId = deadlineRequest.getProfId();
     	
-        if (prof == null || !prof.isChef()) {
+    	
+    	if (!isUserChef(profId)) {
             return ResponseEntity.status(403).body("Access denied: not a department head");
         }
+    	
         boolean success = adminService.setDeadline(deadlineRequest.getDeadline());
         return success ? ResponseEntity.ok("Deadline updated") : ResponseEntity.badRequest().body("Erreur");
     }

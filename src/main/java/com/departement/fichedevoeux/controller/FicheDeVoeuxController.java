@@ -2,9 +2,12 @@ package com.departement.fichedevoeux.controller;
 
 import com.departement.fichedevoeux.model.Module;
 import com.departement.fichedevoeux.model.Voeux;
+import com.departement.fichedevoeux.service.AuthService;
 import com.departement.fichedevoeux.service.FicheDeVoeuxService;
 import DTO.FormulaireRequestDTO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +16,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/form")
 public class FicheDeVoeuxController {
+	
+	private static final Logger log = LoggerFactory.getLogger(AuthService.class);
+
 
     private final FicheDeVoeuxService ficheDeVoeuxService;
 
@@ -22,7 +28,11 @@ public class FicheDeVoeuxController {
 
     // 1. Soumettre la fiche de vœux
     @PostMapping("/submit")
+    //@CrossOrigin(origins = "http://127.0.0.1:5500")
     public ResponseEntity<?> submitForm(@RequestBody FormulaireRequestDTO form) {
+    	
+    	log.info(">>> /SUBMIT called with {}", form);  
+    	
         boolean submitted = ficheDeVoeuxService.submitFormulaire(form);
         return submitted
                 ? ResponseEntity.ok("Formulaire soumis avec succès.")
@@ -32,6 +42,9 @@ public class FicheDeVoeuxController {
     // 2. Vérifier si le professeur a déjà soumis
     @GetMapping("/status")
     public ResponseEntity<String> checkStatus(@RequestParam Long professeurId) {
+    	
+    	log.info(">>> /Status called with {}", professeurId); 
+    	
         boolean hasSubmitted = ficheDeVoeuxService.hasSubmitted(professeurId);
         return ResponseEntity.ok("Statut : " + (hasSubmitted ? "Soumis" : "Non soumis"));
     }

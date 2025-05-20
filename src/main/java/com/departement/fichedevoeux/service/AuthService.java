@@ -42,10 +42,13 @@ public class AuthService {
             return false; // déjà inscrit
         }
         
-		Departement dept = departementRepository.findByNomDepartement(dto.getDepartement());
-		if(dept == null) {
-			return false; // departement n'existe pas
-		}
+        Departement dept = departementRepository.findByNomDepartement(dto.getDepartement());
+        log.info("Département reçu: {}", dto.getDepartement());
+        if (dept == null) {
+            return false; // department doesn't exist
+        }
+        
+		
         
         Professeur prof = new Professeur();
         prof.setEmail(dto.getEmail());
