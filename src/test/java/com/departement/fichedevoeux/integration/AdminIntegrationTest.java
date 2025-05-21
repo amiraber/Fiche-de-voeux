@@ -122,7 +122,7 @@ public class AdminIntegrationTest {
            Voeux voeux = new Voeux();
            voeux.setProfesseur(prof);
            voeux.setModule(module);
-           voeux.setSemestre(1); // changed to int since `semestre` is int in Voeux
+           voeux.setSemestre("1"); // changed to int since `semestre` is int in Voeux
            voeux.setNature("CM");
            voeux.setAnnee(2025);
            voeux.setNumChoix(1);

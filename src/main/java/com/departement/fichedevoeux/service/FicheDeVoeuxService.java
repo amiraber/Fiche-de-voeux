@@ -6,6 +6,7 @@ import com.departement.fichedevoeux.repository.*;
 
 import DTO.ChoixDTO;
 import DTO.FormulaireRequestDTO;
+import DTO.ModuleDTO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,34 +98,40 @@ public class FicheDeVoeuxService {
              
     }
 
-    private boolean enregistrerChoix(List<ChoixDTO> liste, int semestre, Professeur prof, int annee) {
-       // List<String> nomsModules = liste.stream().map(ChoixDTO::getModule).collect(Collectors.toList());
-        List<String> nomsModules = liste.stream().map(ChoixDTO::getModule).toList();
-        
-        List<Module> modules = moduleRepository.findByNomIn(nomsModules);
-        
-       // Map<String, Module> moduleMap = modules.stream().collect(Collectors.toMap(Module::getNom, m -> m));
-     // 2. Allow duplicates by grouping under the same name
-        Map<String, List<Module>> moduleMap = modules.stream()
-                .collect(Collectors.groupingBy(Module::getNom));
-        
-        
-        int numChoix = 1;
-        for (ChoixDTO choix : liste) {
-            //Module module = moduleMap.get(choix.getModule());
-        	List<Module> candidates = moduleMap.get(choix.getModule());
-        	
-           // if (module == null) return false;
-        	 if (candidates == null || candidates.isEmpty()) return false;
-        	 
-        	  // If more than one candidate remains, choose more precisely here
-             Module module = candidates.get(0);
-             
-            Voeux voeux = new Voeux(prof, module, semestre, choix.getNature(), annee, numChoix++);
-            voeuxRepository.save(voeux);
+    private boolean enregistrerChoix(List<ChoixDTO> liste, int semestreInt, Professeur prof, int annee) {
+        if (liste == null) return true;
+
+        for (ChoixDTO c : liste) {
+        	Optional<Module> optionalModule = moduleRepository.findByNomAndPallierAndSpecialiteAndSemestre(
+        		    c.getModule().getNom(),
+        		    c.getModule().getNiveau(),
+        		    c.getModule().getSpecialite(),
+        		    "S" + semestreInt
+        		);
+
+        		if (optionalModule.isEmpty()) continue;
+
+        		Module module = optionalModule.get();
+
+
+            if (module == null) continue;
+
+            for (String nature : c.getNature()) {
+                Voeux voeu = new Voeux();
+                voeu.setAnnee(annee);
+                voeu.setModule(module);
+                voeu.setNature(nature);
+                voeu.setNumChoix(1); // à adapter si nécessaire
+                voeu.setProfesseur(prof);
+                voeu.setSemestre("S" + semestreInt);
+
+                voeuxRepository.save(voeu);
+            }
         }
+
         return true;
     }
+
 
     // 2. Vérifier si déjà soumis
     public boolean hasSubmitted(Long profId) {
@@ -172,5 +179,25 @@ public class FicheDeVoeuxService {
         return year + "-" + (year + 1);
     }
     
+    public List<ChoixDTO> getVoeuxAsDTO(Long profId) {
+        List<Voeux> voeux = voeuxRepository.findByProfesseurId(profId);
+        return voeux.stream().map(v -> {
+            ChoixDTO dto = new ChoixDTO();
+
+            ModuleDTO moduleDTO = new ModuleDTO();
+            moduleDTO.setNom(v.getModule().getNom());
+            moduleDTO.setNiveau(v.getModule().getPallier());
+            moduleDTO.setSpecialite(v.getModule().getSpecialite());
+
+            dto.setModule(moduleDTO);
+            dto.setNature(List.of(v.getNature()));
+
+
+            dto.setNature(List.of(v.getNature().split(","))); // si nature est une String concaténée
+
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
     
 }

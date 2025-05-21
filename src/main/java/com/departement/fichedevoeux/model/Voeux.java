@@ -20,7 +20,7 @@ public class Voeux {
     @JoinColumn(name = "id_module", nullable = false)
     private Module module;
 
-    private int semestre;
+    private String semestre;
 
     private String nature;
     
@@ -31,7 +31,7 @@ public class Voeux {
 
     public Voeux() {}
 
-    public Voeux(Professeur professeur, Module module, int semestre, String nature,int annee, int numChoix) {
+    public Voeux(Professeur professeur, Module module, String semestre, String nature,int annee, int numChoix) {
         this.professeur = professeur;
         this.module = module;
         this.semestre = semestre;
@@ -72,11 +72,11 @@ public class Voeux {
         this.module = module;
     }
 
-    public int getSemestre() {
+    public String getSemestre() {
         return semestre;
     }
 
-    public void setSemestre(int semestre) {
+    public void setSemestre(String semestre) {
         this.semestre = semestre;
     }
 

@@ -4,6 +4,8 @@ import com.departement.fichedevoeux.model.Module;
 import com.departement.fichedevoeux.model.Voeux;
 import com.departement.fichedevoeux.service.AuthService;
 import com.departement.fichedevoeux.service.FicheDeVoeuxService;
+
+import DTO.ChoixDTO;
 import DTO.FormulaireRequestDTO;
 
 import org.slf4j.Logger;
@@ -58,8 +60,8 @@ public class FicheDeVoeuxController {
 
     // 4. Récupérer les choix du professeur (modification)
     @GetMapping("/get")
-    public ResponseEntity<List<Voeux>> getFiche(@RequestParam Long professeurId) {
-        return ResponseEntity.ok(ficheDeVoeuxService.getVoeuxDuProf(professeurId));
+    public ResponseEntity<List<ChoixDTO>> getFiche(@RequestParam Long professeurId) {
+        return ResponseEntity.ok(ficheDeVoeuxService.getVoeuxAsDTO(professeurId));
     }
 
     // 5. Préremplir avec les choix de l'année précédente

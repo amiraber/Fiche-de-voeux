@@ -9,5 +9,8 @@ public interface FicheDeVoeuxRepository extends JpaRepository<Voeux, Long> {
 	List<Voeux> findByProfesseurId(Long profId);
 	List<Voeux> findByProfesseurIdAndAnnee(Long profId, int annee);
 	List<Voeux> findByAnnee(int annee);
+	void deleteByProfesseurId(Long idProf);
+
+
 	
 }

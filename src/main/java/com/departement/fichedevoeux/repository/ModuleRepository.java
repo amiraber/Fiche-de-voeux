@@ -2,6 +2,7 @@ package com.departement.fichedevoeux.repository;
 import com.departement.fichedevoeux.model.Module;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +21,7 @@ public interface ModuleRepository extends JpaRepository <Module, Long> {
 
     // rechercher des modules par leurs noms
 	List<Module> findByNomIn(List<String> noms);
+	
+	Optional<Module> findByNomAndPallierAndSpecialiteAndSemestre(String nom, String pallier, String specialite, String semestre);
+
 }

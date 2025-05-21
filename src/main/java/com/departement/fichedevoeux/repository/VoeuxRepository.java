@@ -10,7 +10,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface VoeuxRepository extends JpaRepository<Voeux, Integer> {
 	 	List<Voeux> findByProfesseurId(Long id);
 
-	    List<Voeux> findBySemestre(Integer semestre);
+	 	List<Voeux> findBySemestre(String semestre);
+
 	    
 	    List<Voeux> findByModuleIdModule(Long idModule);
 
