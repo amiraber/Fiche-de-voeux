@@ -6,6 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -82,7 +83,10 @@ public class AuthController {
         response.put("message", "Login successful");
         response.put("professeurId", prof.getId());
 
-        return ResponseEntity.ok(response);
+        //return ResponseEntity.ok(response);
+        return ResponseEntity.ok()
+        	    .contentType(MediaType.APPLICATION_JSON)
+        	    .body(response);
     }
 	
 	
