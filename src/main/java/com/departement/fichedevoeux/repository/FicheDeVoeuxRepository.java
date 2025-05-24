@@ -2,6 +2,8 @@ package com.departement.fichedevoeux.repository;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
 import com.departement.fichedevoeux.model.Voeux;
 
 public interface FicheDeVoeuxRepository extends JpaRepository<Voeux, Long> {
@@ -10,7 +12,9 @@ public interface FicheDeVoeuxRepository extends JpaRepository<Voeux, Long> {
 	List<Voeux> findByProfesseurIdAndAnnee(Long profId, int annee);
 	List<Voeux> findByAnnee(int annee);
 	void deleteByProfesseurId(Long idProf);
-
+	@Query("SELECT DISTINCT v.professeur.id FROM Voeux v")
+	List<Long> findDistinctProfesseurIds();
+	
 
 	
 }

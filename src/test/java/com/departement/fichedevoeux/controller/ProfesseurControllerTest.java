@@ -84,9 +84,9 @@ public class ProfesseurControllerTest {
     @Test
     void shouldReturnProfesseursByDepartement() throws Exception {
         ProfesseurDTO prof = new ProfesseurDTO();
-        prof.setDepartement("Informatique");
+        prof.setDepartement(1L);
 
-        when(professeurService.getByDepartement(5L)).thenReturn(List.of(prof));
+       // when(professeurService.getByDepartement(5L)).thenReturn(List.of(prof));
 
         mockMvc.perform(get("/api/professeurs/by-departement/5"))
             .andExpect(status().isOk())

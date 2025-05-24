@@ -1,6 +1,7 @@
 package com.departement.fichedevoeux.controller;
 import com.departement.fichedevoeux.model.Professeur;
 import com.departement.fichedevoeux.repository.ProfesseurRepository;
+import com.departement.fichedevoeux.service.MessageService;
 import com.departement.fichedevoeux.service.ProfesseurService;
 
 import DTO.ProfesseurDTO;
@@ -40,10 +41,9 @@ public class ProfesseurController {
         return professeurService.getByEmail(email);
     }
 
-    // Tous les profs d’un département
-    @GetMapping("/by-departement/{id}")
-    public List<ProfesseurDTO> getByDepartment(@PathVariable Long id) {
-        return professeurService.getByDepartement(id);
+    @GetMapping("/by-departement/{departementId}")
+    public List<ProfesseurDTO> getByDepartment(@PathVariable Long departementId, @RequestParam Long chefId) {
+        return professeurService.getByDepartement(departementId, chefId);
     }
 
     // Tous les chefs
@@ -73,7 +73,13 @@ public class ProfesseurController {
         return "Professeur Controller is working!";
     }
     
-    
+    @GetMapping("/conversation-with-chef/{professeurId}")
+    public ResponseEntity<Integer> getConversationWithChef(@PathVariable Long professeurId) {
+        Integer conversationId = professeurService.getConversationWithChef(professeurId);
+        return ResponseEntity.ok(conversationId);
+    }
+
+
 }
 
 

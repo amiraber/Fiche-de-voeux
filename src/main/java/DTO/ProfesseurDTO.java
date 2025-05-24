@@ -6,7 +6,8 @@ public class ProfesseurDTO {
     private String nom;
     private String prenom;
     private String email;
-    private String departement;
+    private Long departement;
+    private Integer conversationId;
     
 	public Long getId() {
 		return id;
@@ -32,13 +33,21 @@ public class ProfesseurDTO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getDepartement() {
+	public Long getDepartement() {
 		return departement;
 	}
-	public void setDepartement(String departement) {
+	public void setDepartement(Long departement) {
 		this.departement = departement;
 	}
     
-    
+	public Integer getConversationId() {
+	    return conversationId;
+	}
+	
+	public void setConversationId(Integer conversationId) {
+	    this.conversationId = conversationId;
+	}
+	
+	
 
 }

@@ -6,7 +6,9 @@ import com.departement.fichedevoeux.service.AuthService;
 import com.departement.fichedevoeux.service.FicheDeVoeuxService;
 
 import DTO.ChoixDTO;
+import DTO.FormulaireCompletDTO;
 import DTO.FormulaireRequestDTO;
+import DTO.ProfesseurDTO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/form")
@@ -35,10 +38,15 @@ public class FicheDeVoeuxController {
     	
     	log.info(">>> /SUBMIT called with {}", form);  
     	
-        boolean submitted = ficheDeVoeuxService.submitFormulaire(form);
-        return submitted
-                ? ResponseEntity.ok("Formulaire soumis avec succès.")
-                : ResponseEntity.badRequest().body("Échec de la soumission du formulaire.");
+    	try {
+    	    boolean submitted = ficheDeVoeuxService.submitFormulaire(form);
+    	    return submitted
+    	        ? ResponseEntity.ok("Formulaire soumis avec succès.")
+    	        : ResponseEntity.badRequest().body("Échec de la soumission du formulaire.");
+    	} catch (FormulaireVerrouilleException e) {
+    	    return ResponseEntity.badRequest().body("Le formulaire est actuellement fermé. La date limite de soumission est dépassée.");
+    	}
+
     }
 
     // 2. Vérifier si le professeur a déjà soumis
@@ -60,8 +68,9 @@ public class FicheDeVoeuxController {
 
     // 4. Récupérer les choix du professeur (modification)
     @GetMapping("/get")
-    public ResponseEntity<List<ChoixDTO>> getFiche(@RequestParam Long professeurId) {
-        return ResponseEntity.ok(ficheDeVoeuxService.getVoeuxAsDTO(professeurId));
+    public ResponseEntity<FormulaireCompletDTO> getFiche(@RequestParam Long professeurId) {
+        FormulaireCompletDTO dto = ficheDeVoeuxService.getFormulaireDuProf(professeurId);
+        return ResponseEntity.ok(dto);
     }
 
     // 5. Préremplir avec les choix de l'année précédente
@@ -94,5 +103,10 @@ public class FicheDeVoeuxController {
             @RequestParam String pallier) {
 
         return ResponseEntity.ok(ficheDeVoeuxService.filterSpecialites(semestre, pallier));
+    }
+    
+    @GetMapping("/inscrits/{departementId}")
+    public List<Map<String, Object>> getInscritsParDepartement(@PathVariable Long departementId) {
+        return ficheDeVoeuxService.getProfesseursInscritsParDepartement(departementId);
     }
 }

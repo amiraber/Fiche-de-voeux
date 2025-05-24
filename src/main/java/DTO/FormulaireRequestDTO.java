@@ -13,7 +13,8 @@ public class FormulaireRequestDTO {
 	    private int extraHoursS1;
 	    private int extraHoursS2;
 	    private int proposedLicence;
-	    private int prposedMaster;
+	    private int proposedMaster; // ✅ NOM CORRECT
+
 	    private Grade grade;
 	    private int numBureau;
 	    private String emailPref;
@@ -61,12 +62,14 @@ public class FormulaireRequestDTO {
 		public void setProposedLicences(int proposedLicence) {
 			this.proposedLicence = proposedLicence;
 		}
-		public int getPrposedMaster() {
-			return prposedMaster;
+		public int getProposedMaster() {
+		    return proposedMaster;
 		}
-		public void setPrposedMaster(int prposedMaster) {
-			this.prposedMaster = prposedMaster;
+
+		public void setProposedMaster(int proposedMaster) {
+		    this.proposedMaster = proposedMaster;
 		}
+
 		public Grade getGrade() {
 			return grade;
 		}

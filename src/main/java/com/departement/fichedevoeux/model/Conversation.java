@@ -1,5 +1,7 @@
 package com.departement.fichedevoeux.model;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -21,6 +23,18 @@ public class Conversation {
     @ManyToOne
     @JoinColumn(name = "id_initiateur", nullable = false)
     private Professeur initiateur;
+    
+    @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL)
+    private List<Message> messages;
+
+    // Constructeurs, getters, setters...
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
+    }
 
     public Conversation() {}
 

@@ -13,9 +13,14 @@ import java.util.stream.Collectors;
 
 @Service
 public class ProfesseurService {
+	
+	
 
     @Autowired
     private ProfesseurRepository professeurRepository;
+    
+    @Autowired
+    private ConversationService conversationService;
 
     // Récupérer tous les profs (en DTO si besoin)
     public List<ProfesseurDTO> getAll() {
@@ -38,10 +43,18 @@ public class ProfesseurService {
     }
 
     // Trouver tous les profs d’un département
-    public List<ProfesseurDTO> getByDepartement(Long departementId) {
+    public List<ProfesseurDTO> getByDepartement(Long departementId, Long chefId) {
         return professeurRepository.findByDepartementId(departementId)
                 .stream()
-                .map(this::toDTO)
+                .filter(p -> !p.isChef()) // on ignore les autres chefs
+                .map(prof -> {
+                    ProfesseurDTO dto = toDTO(prof);
+                    Integer convId = conversationService.getExistingConversationId(prof.getId(), chefId);
+                    dto.setConversationId(convId);
+                    System.out.println("Professeur: " + prof.getNom() + ", Conversation ID: " + convId);
+
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -65,10 +78,12 @@ public class ProfesseurService {
     // Conversion vers DTO
     private ProfesseurDTO toDTO(Professeur prof) {
         ProfesseurDTO dto = new ProfesseurDTO();
+
         dto.setId(prof.getId());
         dto.setNom(prof.getNom());
         dto.setEmail(prof.getEmail());
-        dto.setDepartement(prof.getDepartement().getNomDepartement());
+        dto.setDepartement(prof.getDepartement().getId());
+
         return dto;
     }
     
@@ -79,5 +94,36 @@ public class ProfesseurService {
     	professeurRepository.save(prof);
     	return true;
     }
+    
+    public List<ProfesseurDTO> getProfesseursByDepartementForChef(Long departementId, String emailChef) {
+        Professeur chef = professeurRepository.findByEmail(emailChef);
+        if (chef == null || !chef.isChef()) {
+            throw new RuntimeException("Accès interdit : seul un chef peut faire ça.");
+        }
+
+        return professeurRepository.findByDepartementId(departementId)
+                .stream()
+                .filter(p -> !p.isChef()) // On ignore les autres chefs
+                .map(prof -> {
+                    ProfesseurDTO dto = toDTO(prof);
+                    Integer convId = conversationService.getOrCreateConversationId(prof.getId(), chef.getId());
+                    dto.setConversationId(convId);
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+    
+    public Integer getConversationWithChef(Long profId) {
+        Professeur prof = professeurRepository.findById(profId)
+            .orElseThrow(() -> new RuntimeException("Professeur introuvable"));
+
+        Professeur chef = professeurRepository.findChefByDepartement(prof.getDepartement().getId());
+        if (chef == null) {
+            throw new RuntimeException("Chef de département introuvable");
+        }
+
+        return conversationService.getExistingConversationId(prof.getId(), chef.getId());
+    }
+
 }
 

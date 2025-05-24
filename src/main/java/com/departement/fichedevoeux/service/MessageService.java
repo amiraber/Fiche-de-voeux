@@ -6,13 +6,18 @@ import com.departement.fichedevoeux.model.Professeur;
 import com.departement.fichedevoeux.repository.ConversationRepository;
 import com.departement.fichedevoeux.repository.MessageRepository;
 import com.departement.fichedevoeux.repository.ProfesseurRepository;
+
+import DTO.MessageDTO;
 import DTO.MessageRequestDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +37,8 @@ public class MessageService {
     private ConversationRepository conversationRepository;
 
     // ✅ Envoyer un message dans une conversation
-    public boolean envoyerMessage(MessageRequestDTO dto) {
+    //pas
+    public boolean envoyerMessaged(MessageRequestDTO dto) {
     	
     	log.info(">>>>>SERVICE MESSAGE SEND MESSAGE METHOD REACHED ✅");
     	
@@ -59,6 +65,7 @@ public class MessageService {
     }
 
     // ✅ Charger tous les messages d’une conversation
+    //pas
     public List<Message> getMessagesParConversation(Long conversationId) {
     	log.info(">>>>>SERVICE MESSAGE GET MESSAGE METHOD REACHED ✅");
         if (conversationId == null) return List.of();
@@ -69,4 +76,80 @@ public class MessageService {
        
         //return messageRepository.findByConversationIdConversation(conversationId.intValue());
     }
+    
+    public List<MessageDTO> getMessagesByConversationId(Long conversationId) {
+    	return messageRepository.findByConversation_IdConversation(conversationId.intValue())
+    		    .stream().map(msg -> {
+    		        MessageDTO dto = new MessageDTO();
+    		        dto.setContenu(msg.getContenu());
+    		        dto.setSenderId(msg.getAuteur().getId());
+    		        dto.setLu(msg.isEstLu());
+    		        return dto;
+    		    }).collect(Collectors.toList());
+
+    }
+
+   //envoy
+    public boolean envoyerMessage(MessageRequestDTO dto) {
+        if (dto == null || dto.getContent() == null || dto.getContent().trim().isEmpty()) {
+            return false;
+        }
+
+        Professeur sender = professeurRepository.findById(dto.getSenderId()).orElse(null);
+        if (sender == null) return false;
+
+        Conversation conv = null;
+
+        // Soit une conversation est déjà connue (par l'interface)
+        if (dto.getConversationId() != null) {
+            conv = conversationRepository.findById(dto.getConversationId().intValue()).orElse(null);
+        }
+
+        // Soit il faut la retrouver ou la créer
+        if (conv == null) {
+            // Recherche bidirectionnelle
+            Optional<Conversation> existing = conversationRepository.findByChefAndProf(sender.getId(), null);
+            if (existing.isEmpty()) {
+                existing = conversationRepository.findByChefAndProf(null, sender.getId());
+            }
+
+            if (existing.isPresent()) {
+                conv = existing.get();
+            } else {
+                // Création si pas trouvé
+                conv = new Conversation();
+                conv.setSujet("Conversation ouverte par " + sender.getNom());
+                conv.setDateCreation(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+                conv.setInitiateur(sender);
+                conversationRepository.save(conv);
+            }
+        }
+
+        if (conv == null) return false;
+
+        Message msg = new Message();
+        msg.setAuteur(sender);
+        msg.setConversation(conv);
+        msg.setContenu(dto.getContent());
+        msg.setDateEnvoi(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        msg.setEstLu(false);
+
+        messageRepository.save(msg);
+        return true;
+    }
+
+    public List<MessageDTO> getMessagesByConversationIdSorted(Long conversationId) {
+        return messageRepository.findByConversationIdOrderByDateAsc(conversationId.intValue())
+                .stream().map(msg -> {
+                    MessageDTO dto = new MessageDTO();
+                    dto.setContenu(msg.getContenu());
+                    dto.setSenderId(msg.getAuteur().getId());
+                    dto.setLu(msg.isEstLu());
+                    dto.setTypeExpediteur(msg.getAuteur().isChef() ? "ADMIN" : "PROF");
+                    return dto;
+                }).collect(Collectors.toList());
+    }
+    
+  
+
 }
