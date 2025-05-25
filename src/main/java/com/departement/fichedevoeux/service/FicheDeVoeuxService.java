@@ -60,6 +60,12 @@ public class FicheDeVoeuxService {
         int currentYear = LocalDate.now().getYear();
         List<Voeux> anciens = voeuxRepository.findByProfesseurIdAndAnnee(prof.getId(), currentYear);
 
+
+        String anneeScolaire = getCurrentAcademicYear(); // ex: "2025-2026"
+        List<BesoinsProf> anciensBesoins = besoinsProfRepository.findByProfesseurIdAndAnneeScolaire(prof.getId(), anneeScolaire);
+
+
+        
         // Fusionne les deux semestres
         List<ChoixDTO> nouveauxChoix = new ArrayList<>();
         nouveauxChoix.addAll(form.getSemestre1());
@@ -84,6 +90,51 @@ public class FicheDeVoeuxService {
             }
         }
 
+        boolean insererBesoins = true;
+        BesoinsProf old = anciensBesoins.isEmpty() ? null : anciensBesoins.get(0);
+
+     // Supprime les autres doublons
+        if (anciensBesoins.size() > 1) {
+            for (int i = 1; i < anciensBesoins.size(); i++) {
+                besoinsProfRepository.delete(anciensBesoins.get(i));
+                log.warn("⚠️ Doublon besoin supprimé : {}", anciensBesoins.get(i));
+            }
+        }
+
+        if (old != null) {
+            boolean identique =
+                Objects.equals(old.getHeuresSuppS1(), form.isWantsExtraCourses() ? form.getExtraHoursS1() : 0) &&
+                Objects.equals(old.getHeuresSuppS2(), form.isWantsExtraCourses() ? form.getExtraHoursS2() : 0) &&
+                Objects.equals(old.getNbrHeuresSuppS1(), form.getExtraHoursS1()) &&
+                Objects.equals(old.getNbrHeuresSuppS2(), form.getExtraHoursS2()) &&
+                Objects.equals(old.getNbrPfeLicence(), form.getProposedLicence()) &&
+                Objects.equals(old.getNbrPfeMaster(), form.getProposedMaster());
+
+            if (identique) {
+                log.info("📦 Besoins identiques à l’existant. Rien à changer.");
+                insererBesoins = false;
+            } else {
+                besoinsProfRepository.delete(old);
+                log.info("🗑️ Ancien besoin supprimé (différent du nouveau)");
+            }
+        }
+
+        if (insererBesoins) {
+            BesoinsProf besoins = new BesoinsProf();
+            besoins.setProfesseur(prof);
+            besoins.setAnneeScolaire(anneeScolaire);
+            besoins.setHeuresSuppS1(form.isWantsExtraCourses() ? form.getExtraHoursS1() : 0);
+            besoins.setHeuresSuppS2(form.isWantsExtraCourses() ? form.getExtraHoursS2() : 0);
+            besoins.setNbrHeuresSuppS1(form.getExtraHoursS1());
+            besoins.setNbrHeuresSuppS2(form.getExtraHoursS2());
+            besoins.setNbrPfeLicence(form.getProposedLicence());
+            besoins.setNbrPfeMaster(form.getProposedMaster());
+            besoins.setStatut("SOUMIS");
+            besoinsProfRepository.save(besoins);
+        }
+
+
+        
     	
         if (isFormLocked()) {
             throw new FormulaireVerrouilleException("Formulaire verrouillé : deadline dépassée.");
@@ -101,16 +152,6 @@ public class FicheDeVoeuxService {
        
 
 
-        // Créer BesoinsProf
-        BesoinsProf besoins = new BesoinsProf();
-        besoins.setProfesseur(prof);
-        besoins.setAnneeScolaire(getCurrentAcademicYear());
-        besoins.setHeuresSuppS1(form.isWantsExtraCourses() ? form.getExtraHoursS1() : 0);
-        besoins.setHeuresSuppS2(form.isWantsExtraCourses() ? form.getExtraHoursS2() : 0);
-        besoins.setNbrPfeLicence(form.getProposedLicences());
-        besoins.setNbrPfeMaster(form.getProposedMaster());
-        besoins.setStatut("SOUMIS");
-        besoinsProfRepository.save(besoins);
 
         
 
@@ -130,11 +171,10 @@ public class FicheDeVoeuxService {
 
         log.info("✓ SUBMIT completed for Prof {} ({}) | S1:[{}] | S2:[{}] | Ext hrs S1={} S2={} | PFE L={} PFE M={}",
                 prof.getId(), prof.getNom() + " " + prof.getPrenom(),
-                recapS1, recapS2,
-                besoins.getHeuresSuppS1(), besoins.getHeuresSuppS2(),
-                besoins.getNbrPfeLicence(), besoins.getNbrPfeMaster());
+                recapS1, recapS2);
+              //  besoins.getHeuresSuppS1(), besoins.getHeuresSuppS2(),
+              //  besoins.getNbrPfeLicence(), besoins.getNbrPfeMaster());
 
-        /* ======================= */
         
         System.out.println("📌 Grade reçu : " + form.getGrade());
         System.out.println("📌 Professeur ID : " + form.getProfesseurId());

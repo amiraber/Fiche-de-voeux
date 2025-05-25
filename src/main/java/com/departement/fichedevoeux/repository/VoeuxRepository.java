@@ -7,6 +7,8 @@ import com.departement.fichedevoeux.model.Voeux;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface VoeuxRepository extends JpaRepository<Voeux, Integer> {
 	 	List<Voeux> findByProfesseurId(Long id);
@@ -20,5 +22,7 @@ public interface VoeuxRepository extends JpaRepository<Voeux, Integer> {
 		boolean existsByProfesseurAndModuleAndNatureAndSemestreAndNumChoix(
 			    Professeur prof, com.departement.fichedevoeux.model.Module module, String nature, String semestre, int numChoix
 			);
+		
+		
 
 }

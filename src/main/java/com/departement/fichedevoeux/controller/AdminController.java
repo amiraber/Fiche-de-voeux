@@ -44,21 +44,61 @@ public class AdminController {
     
     //exports data (Fiche de Vœux submissions)
    
-    @GetMapping("/export")
-    @PreAuthorize("hasRole('CHEF_DEP')")
-    public ResponseEntity<?> exportExcel(Authentication authentication) {
+  //exports data S1
 
-    	
-    	 String email = authentication.getName(); // this is the email from UserDetails
-    	 Professeur prof = professeurRepository.findByEmail(email);
-    	
-    	if (prof == null || !prof.isChef()) {
-    	    return ResponseEntity.status(403).body("Access denied: not a department head");
-    	}
-        
-        byte[] fichier = adminService.exporterExcel();
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=voeux.xlsx\"").body(fichier);
+    @GetMapping("/export/s1")
+
+    public ResponseEntity<?> exportVoeuxS1(@RequestParam Long profId) {
+
+        Professeur prof = professeurRepository.findById(profId).orElse(null);
+
+        if (prof == null || !prof.isChef()) {
+
+            return ResponseEntity.status(403).body("Access denied");
+
+        }
+
+
+
+        byte[] fichier = adminService.exporterVoeuxSemestre1(profId);
+
+        return ResponseEntity.ok()
+
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=voeux_s1.xlsx")
+
+                .body(fichier);
+
     }
+
+
+
+  //exports data S2
+
+    @GetMapping("/export/s2")
+
+    public ResponseEntity<?> exportVoeuxS2(@RequestParam Long profId) {
+
+        Professeur prof = professeurRepository.findById(profId).orElse(null);
+
+        if (prof == null || !prof.isChef()) {
+
+            return ResponseEntity.status(403).body("Access denied");
+
+        }
+
+
+
+        byte[] fichier = adminService.exporterVoeuxSemestre2(profId);
+
+        return ResponseEntity.ok()
+
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=voeux_s2.xlsx")
+
+                .body(fichier);
+
+    }
+
+    
     
     
     //see if the deadline is active

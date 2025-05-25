@@ -16,7 +16,7 @@ public class Voeux {
     @JoinColumn(name = "id_prof", nullable = false)
     private Professeur professeur;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_module", nullable = false)
     private Module module;
 

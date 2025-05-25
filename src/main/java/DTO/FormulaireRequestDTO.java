@@ -56,10 +56,10 @@ public class FormulaireRequestDTO {
 		public void setExtraHoursS2(int extraHoursS2) {
 			this.extraHoursS2 = extraHoursS2;
 		}
-		public int getProposedLicences() {
+		public int getProposedLicence() {
 			return proposedLicence;
 		}
-		public void setProposedLicences(int proposedLicence) {
+		public void setProposedLicence(int proposedLicence) {
 			this.proposedLicence = proposedLicence;
 		}
 		public int getProposedMaster() {
